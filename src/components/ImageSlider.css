@@ -1,0 +1,142 @@
+/* Container for the Swiper */
+.mySwiper {
+  width: 100%; /* Full viewport width */
+  height: auto; /* Adjust to content height */
+  overflow: hidden; /* Prevent any overflow */
+  padding: 10px 0; /* Optional padding for spacing */
+}
+
+/* Styling for each image in the slider */
+.mySwiper img {
+  width: 100%; /* Make image take full width of the slide */
+  height: auto; /* Maintain aspect ratio */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for better UI */
+  object-fit: cover; /* Ensure images fit without distortion */
+}
+
+/* Optional styling for space between slides */
+.swiper-slide {
+  display: flex;
+  justify-content: center; /* Center the image in the slide */
+  align-items: center; /* Center vertically */
+}
+
+/* Optional grab cursor */
+.swiper {
+  cursor: grab;
+}
+
+/* From Uiverse.io by vikiWayne */ 
+.swiper-button {
+  background-color: white;
+  width: 4rem;
+  height: 2rem;
+  color: black; /* Text color */
+  border: 1px solid black; /* Optional border color */
+  padding: 10px 20px;
+  margin-top: 20%;
+  font-size: .5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.swiper-button:hover {
+  background-color: black; /* Button hover color */
+  color: white; /* Text color on hover */
+}
+
+/* Mobile-specific styling */
+@media (max-width: 767px) {
+  .swiper-button {
+    font-size: 0.6rem; /* Adjust font size on mobile */
+    padding: 8px 16px; /* Adjust padding on mobile */
+  }
+}
+
+
+/* Styling for the product slide container */
+.product-slide {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f9f9f9; /* Light background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Hover effect for product slide */
+.product-slide:hover {
+  transform: translateY(-5px); /* Slight lift on hover */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
+/* Styling for the image inside the product slide */
+.product-slide img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Styling for the product description container */
+.product-slide-des {
+  text-align: center;
+}
+
+/* Styling for the product title */
+.product-slide-des h1 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+/* Styling for the product price */
+.product-slide-des h4 {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+/* Styling for the button */
+.product-slide-des button {
+  background-color: white;
+  color: black;
+  font-size: 0.9rem;
+  font-weight: bold;
+  padding: 8px 12px;
+  border: solid 1px black;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for the button */
+.product-slide-des button:hover {
+  background-color: #0056b3;
+  color: #fff;
+}
+
+/* Mobile-specific styling */
+@media (max-width: 767px) {
+  .product-slide {
+    padding: 10px;
+  }
+
+  .product-slide-des h1 {
+    font-size: 1rem;
+  }
+
+  .product-slide-des h4 {
+    font-size: 0.9rem;
+  }
+
+  .product-slide-des button {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+}
