@@ -1,53 +1,78 @@
+"use client"
 import { Swiper, SwiperSlide } from "swiper/react";
+import { useState, useEffect } from "react";
+import { db } from "../app/api/firebase"; 
+import { collection, query, where, getDocs } from "firebase/firestore";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "./ImageSlider.css";
 
 const Bestseller = () => {
-  // Define the images array directly in the component
-  const images = [
-    'catagories/Board.jpg', 
-    'catagories/Board.jpg', 
-    'catagories/Board.jpg',
-    'catagories/Board.jpg', 
-    'catagories/Board.jpg', 
-    'catagories/Board.jpg'
-  ];
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchBestSellerProducts = async () => {
+      try {
+        const productsRef = collection(db, "products");
+        const bestQuery = query(productsRef, where("categories", "array-contains", "Best"));
+        const querySnapshot = await getDocs(bestQuery);
+        
+        const productsData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        console.log("Fetched Best Products:", productsData); // Debugging
+        setProducts(productsData);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchBestSellerProducts();
+  }, []);
 
   return (
     <div>
-        <h1>Best Seller</h1>
+      <h1>Best Seller</h1>
+      {loading ? (
+        <p>Loading...</p>
+      ) : products.length === 0 ? (
+        <p>No Best Seller products available.</p>
+      ) : (
         <Swiper
-      slidesPerView={2.5} // Show 2.5 images in the viewport
-      spaceBetween={10} // Space between images
-      grabCursor={true} // Enable drag cursor
-      freeMode={true} // Smooth, non-snapping scrolling
-      className="mySwiper"
-    >
-      {images.map((src, i) => (
-        <SwiperSlide key={i}>
-          <div className="product-slide">
-            <img
-              src={src}
-              alt={`Slide ${i}`}
-            />
-            <div className="product-slide-des">
-              <h1>Board Game</h1>
-              <h4>599rs</h4>
-              <button>View on Amazon</button>
-            </div>
-          </div>
-        </SwiperSlide>
-      ))}
-      <SwiperSlide>
-        <button
-          className="swiper-button"
-          onClick={() => alert("Redirecting to all products!")}
+          slidesPerView={2.5}
+          spaceBetween={10}
+          grabCursor={true}
+          freeMode={true}
+          className="mySwiper"
         >
-          View All Products
-        </button>
-      </SwiperSlide>
-    </Swiper>
+          {products.map((product) => (
+            <SwiperSlide key={product.id}>
+              <div className="product-slide">
+                <img
+                  src={product.image || "/placeholder.jpg"} // Placeholder image
+                  alt={product.name || "Product"}
+                />
+                <div className="product-slide-des">
+                  <h1>{product.name || "Product Name"}</h1>
+                  <h4>{product.price ? `${product.price}rs` : "Price not available"}</h4>
+                  <button onClick={() => window.open(product.link, "_blank")}>
+                    View on Amazon
+                  </button>
+                </div>
+              </div>
+            </SwiperSlide>
+          ))}
+          <SwiperSlide>
+            <button
+              className="swiper-button"
+              onClick={() => alert("Redirecting to all products!")}
+            >
+              View All Products
+            </button>
+          </SwiperSlide>
+        </Swiper>
+      )}
     </div>
   );
 };

@@ -17,20 +17,19 @@ export default function Home({ children }) {
   const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
-    // Timer for loader (5 seconds)
     const loaderTimer = setTimeout(() => {
       setShowLoader(false);
       setShowVideo(true); // Show video after loader
-    }, 4000); // 5 seconds for loader
+    }, 1000); 
 
-    return () => clearTimeout(loaderTimer); // Cleanup loader timer
+    return () => clearTimeout(loaderTimer); 
   }, []);
   useEffect(() => {
     if (showVideo) {
       // Timer for video (e.g., 3 seconds)
       const videoTimer = setTimeout(() => {
         setShowVideo(false); // Hide video after playback
-      }, 3000); // Adjust the duration to match the video length
+      }, 1000); // Adjust the duration to match the video length
 
       return () => clearTimeout(videoTimer); // Cleanup video timer
     }

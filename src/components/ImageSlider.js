@@ -1,53 +1,77 @@
+"use client"
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "./ImageSlider.css";
+import { useEffect, useState } from "react";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../app/api/firebase"; // Adjust the path to match your structure
 
 const ImageSlider = () => {
-  // Define the images array directly in the component
-  const images = [
-    'catagories/Board.jpg', 
-    'catagories/Board.jpg', 
-    'catagories/Board.jpg',
-    'catagories/Board.jpg', 
-    'catagories/Board.jpg', 
-    'catagories/Board.jpg'
-  ];
+  const [trendingProducts, setTrendingProducts] = useState([]);
+
+  useEffect(() => {
+    // Fetch Trending Products from Firebase
+    const fetchTrendingProducts = async () => {
+      try {
+        const productsRef = collection(db, "products");
+        const q = query(productsRef, where("categories", "array-contains", "Trending"));
+        const querySnapshot = await getDocs(q);
+
+        const trending = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setTrendingProducts(trending);
+      } catch (error) {
+        console.error("Error fetching trending products:", error);
+      }
+    };
+
+    fetchTrendingProducts();
+  }, []);
 
   return (
     <div>
-        <h1>Latest Produts</h1>
-        <Swiper
-      slidesPerView={2.5} // Show 2.5 images in the viewport
-      spaceBetween={10} // Space between images
-      grabCursor={true} // Enable drag cursor
-      freeMode={true} // Smooth, non-snapping scrolling
-      className="mySwiper"
-    >
-      {images.map((src, i) => (
-        <SwiperSlide key={i}>
-          <div className="product-slide">
-            <img
-              src={src}
-              alt={`Slide ${i}`}
-            />
-            <div className="product-slide-des">
-              <h1>Board Game</h1>
-              <h4>599rs</h4>
-              <button>View on Amazon</button>
+      <h1>Trending Products</h1>
+      <Swiper
+        slidesPerView={2.5}
+        spaceBetween={10}
+        grabCursor={true}
+        freeMode={true}
+        className="mySwiper"
+      >
+        {trendingProducts.map((product) => (
+          <SwiperSlide key={product.id}>
+            <div className="product-slide">
+              <img
+                src={product.image || "/placeholder.jpg"} // Use placeholder if no image
+                alt={product.name || "Product Image"}
+              />
+              <div className="product-slide-des">
+                <h1>{product.name || "Product Name"}</h1>
+                <h4>{product.price ? `${product.price}rs` : "Price not available"}</h4>
+                <button
+                  onClick={() =>
+                    window.open(product.link, "_blank", "noopener noreferrer")
+                  }
+                >
+                  View on Amazon
+                </button>
+              </div>
             </div>
-          </div>
+          </SwiperSlide>
+        ))}
+        <SwiperSlide>
+          <button
+            className="swiper-button"
+            onClick={() => alert("Redirecting to all products!")}
+          >
+            View All Products
+          </button>
         </SwiperSlide>
-      ))}
-      <SwiperSlide>
-        <button
-          className="swiper-button"
-          onClick={() => alert("Redirecting to all products!")}
-        >
-          View All Products
-        </button>
-      </SwiperSlide>
-    </Swiper>
+      </Swiper>
     </div>
   );
 };

@@ -2,7 +2,7 @@
 import { db } from "../../api/firebase"; // Ensure Firestore is configured
 import { collection, addDoc } from "firebase/firestore";
 import { useState } from "react";
-
+import './addProduct.css'
 const AddProduct = () => {
   const [loading, setLoading] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState(""); // Store the Cloudinary image URL
@@ -112,11 +112,17 @@ const AddProduct = () => {
         value={product.description}
         onChange={(e) => setProduct({ ...product, description: e.target.value })}
       />
+      <input
+  type="number"
+  placeholder="Price"
+  value={product.price}
+  onChange={(e) => setProduct({ ...product, price: e.target.value })}
+/>
 
       {/* Categories */}
       <div>
         <p>Select Categories:</p>
-        {["Dogs", "Cats", "Home", "Tech", "Cars"].map((category) => (
+        {["Dogs", "Cats", "Home", "Tech", "Cars","Trending","Best"].map((category) => (
           <label key={category}>
             <input
               type="checkbox"

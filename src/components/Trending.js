@@ -11,7 +11,7 @@ const Trending = () => {
   
     return (
       <div className='Trending-Component'>
-        <h1>Trending Products</h1>
+        <h1>Top Collections</h1>
         <div className="trending">
         {data.map((item) => (
           <div className="trending-card" key={item.id}>

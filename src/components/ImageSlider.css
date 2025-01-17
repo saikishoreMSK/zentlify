@@ -60,6 +60,7 @@
 
 /* Styling for the product slide container */
 .product-slide {
+
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -124,7 +125,13 @@
 /* Mobile-specific styling */
 @media (max-width: 767px) {
   .product-slide {
+    height: 14rem;
+    width: 10rem;
     padding: 10px;
+  }
+  .product-slide img{
+    height: 6rem;
+    width: 100%;
   }
 
   .product-slide-des h1 {
