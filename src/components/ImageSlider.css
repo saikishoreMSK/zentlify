@@ -60,7 +60,8 @@
 
 /* Styling for the product slide container */
 .product-slide {
-
+  height: 30rem;
+  width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -79,7 +80,7 @@
 /* Styling for the image inside the product slide */
 .product-slide img {
   width: 100%;
-  height: auto;
+  height: 22rem;
   margin-bottom: 10px;
 }
 

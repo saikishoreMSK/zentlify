@@ -175,7 +175,6 @@ const ManageProducts1 = () => {
       </div>
 
       {/* Edit Product Form */}
-      {/* Edit Product Form */}
 {editingProduct && (
   <div className="modal-overlay">
     <div className="modal">

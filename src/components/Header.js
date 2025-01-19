@@ -1,4 +1,5 @@
 // src/app/components/Header.js
+"use client"
 import Image from 'next/image';
 import styles from './Header.module.css';
 import { IoIosMenu } from "react-icons/io";

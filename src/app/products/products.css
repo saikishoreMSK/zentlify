@@ -1,0 +1,106 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f8f9fa;
+  }
+  /* Search Bar */
+  /* Search container styling */
+.search-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  padding: 10px;
+  max-width: 600px; /* Adjust width as needed */
+ /* Light background color */
+  border-radius: 10px; /* Smooth rounded corners */
+ /* Soft shadow */
+}
+
+/* Search bar input field styling */
+.search-bar {
+  width: 100%;
+  padding: 10px 15px; /* Comfortable padding */
+  border: 1px solid #ccc; /* Subtle border */
+  border-radius: 5px; /* Smooth edges */
+  font-size: 16px; /* Easy-to-read font size */
+  transition: all 0.3s ease; /* Smooth transition for focus */
+}
+
+/* Placeholder text styling */
+.search-bar::placeholder {
+  color: #aaa; /* Subtle placeholder color */
+  font-style: italic; /* Slightly different style for placeholders */
+}
+
+/* Focused input styling */
+.search-bar:focus {
+  border-color: #007bff; /* Highlight border on focus */
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Light blue glow */
+  outline: none; /* Remove default outline */
+}
+
+  
+  /* Container Styling */
+  .product-list {
+    display: grid; /* Use grid for layout */
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Flexible columns */
+    gap: 1rem;
+    padding: 1rem;
+    justify-items: center; /* Center cards horizontally */
+    background-color: #f8f9fa;
+  }
+  
+  /* Individual Product Card */
+  .product-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Product Image */
+  .product-image {
+    width: 100%; /* Ensure images fill their container */
+    height: 150px; /* Fixed height for consistent size */
+    object-fit: cover; /* Crop the image to fit */
+    border-radius: 8px;
+  }
+  
+  /* Product Name */
+  .product-name {
+    font-size: 1rem;
+    color: #333;
+    margin: 0;
+  }
+  /* Product Price */
+  .product-price{
+    margin: 1px;
+  }
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .product-list {
+      grid-template-columns: repeat(2, 1fr); /* Two columns for mobile view */
+      gap: 0.5rem; /* Adjust gap for mobile */
+    }
+  
+    .product-card {
+      padding: 0.8rem;
+    }
+  
+    .product-name {
+      font-size: 0.9rem;
+      margin: 0;
+
+    }
+  }
