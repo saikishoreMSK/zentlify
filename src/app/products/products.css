@@ -12,9 +12,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 0 auto;
+
   padding: 10px;
-  max-width: 600px; /* Adjust width as needed */
+  max-width: 700px; /* Adjust width as needed */
  /* Light background color */
   border-radius: 10px; /* Smooth rounded corners */
  /* Soft shadow */

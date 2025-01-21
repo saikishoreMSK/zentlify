@@ -7,8 +7,10 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../app/api/firebase"; // Adjust the path to match your structure
 
+
 const ImageSlider = () => {
   const [trendingProducts, setTrendingProducts] = useState([]);
+
 
   useEffect(() => {
     // Fetch Trending Products from Firebase
@@ -43,26 +45,29 @@ const ImageSlider = () => {
         className="mySwiper"
       >
         {trendingProducts.map((product) => (
-          <SwiperSlide key={product.id}>
-            <div className="product-slide">
-              <img
-                src={product.image || "/placeholder.jpg"} // Use placeholder if no image
-                alt={product.name || "Product Image"}
-              />
-              <div className="product-slide-des">
-                <h1>{product.name || "Product Name"}</h1>
-                <h4>{product.price ? `${product.price}rs` : "Price not available"}</h4>
-                <button
-                  onClick={() =>
-                    window.open(product.link, "_blank", "noopener noreferrer")
-                  }
-                >
-                  View on Amazon
-                </button>
-              </div>
-            </div>
-          </SwiperSlide>
-        ))}
+  <SwiperSlide key={product.id}>
+    <Link href={`/products/${product.id}`}>
+      <div className="product-slide">
+        <img
+          src={product.image || "/placeholder.jpg"} // Use placeholder if no image
+          alt={product.name || "Product Image"}
+        />
+        <div className="product-slide-des">
+          <h1>{product.name || "Product Name"}</h1>
+          <h4>{product.price ? `${product.price}rs` : "Price not available"}</h4>
+          <button
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent link navigation on button click
+              window.open(product.link, "_blank", "noopener noreferrer");
+            }}
+          >
+            View on Amazon
+          </button>
+        </div>
+      </div>
+    </Link>
+  </SwiperSlide>
+))}
         <SwiperSlide>
           <button
             className="swiper-button"

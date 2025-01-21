@@ -8,6 +8,7 @@ import Radio from "./components/Radio";
 import styles from '../../components/Header.module.css'
 import { IoIosMenu } from "react-icons/io";
 import Image from 'next/image';
+import Link from "next/link";
 
 const ProductsPage = () => {
   const [products, setProducts] = useState([]);
@@ -93,20 +94,25 @@ const ProductsPage = () => {
       <Radio onCategoryChange={handleCategoryChange} />
 
       <div className="product-list">
-        {filteredProducts.map((product) => (
-          <div className="product-card" key={product.id}>
-            <img className="product-image" src={product.image} alt={product.name} />
-            <h2 className="product-name">{product.name}</h2>
-            <p className="product-price">{product.price}rs</p>
-            <button
-              className="product-button"
-              onClick={() => window.open(product.link, "_blank")}
-            >
-              View Details
-            </button>
-          </div>
-        ))}
+  {filteredProducts.map((product) => (
+    <Link href={`/products/${product.id}`} key={product.id}>
+      <div className="product-card">
+        <img className="product-image" src={product.image} alt={product.name} />
+        <h2 className="product-name">{product.name}</h2>
+        <p className="product-price">{product.price}rs</p>
+        <button
+          className="product-button"
+          onClick={(e) => {
+            e.stopPropagation(); // Prevent link navigation on button click
+            window.open(product.link, "_blank");
+          }}
+        >
+          View Details
+        </button>
       </div>
+    </Link>
+  ))}
+</div>
     </>
   );
 };
