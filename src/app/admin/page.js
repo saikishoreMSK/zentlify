@@ -3,13 +3,14 @@ import { useState } from "react";
 import AddProduct from "./AddProduct/page"; // Import your AddProduct component
 import ManageProducts from "./ManageProducts/page"; // Import your ManageProducts component
 import './admin.css';
+
 const AdminPage = () => {
   const [activeComponent, setActiveComponent] = useState("addProduct"); // State to track the active component
 
   return (
     <div className="admin-panel">
-      {/* Sidebar */}
-      <div className="sidebar">
+      {/* Navbar */}
+      <div className="navbar">
         <button
           className={activeComponent === "addProduct" ? "active" : ""}
           onClick={() => setActiveComponent("addProduct")}

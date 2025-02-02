@@ -6,6 +6,7 @@ import "./ImageSlider.css";
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../app/api/firebase"; // Adjust the path to match your structure
+import Link from "next/link";
 
 
 const ImageSlider = () => {

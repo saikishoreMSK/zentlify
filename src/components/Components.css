@@ -1,25 +1,63 @@
-/* Carousel CSS */
-.embla{
-    height: 16rem;
-}
-.embla__slide{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.embla__slide img {
-    height: 100%;
-    width: 100%;
+.embla {
+  height: 16rem;
 }
 
+.embla__slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 100vw;
+}
+
+.embla__slide img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain; /* Maintain aspect ratio and fill */
+}
+
+.embla-product-slide {
+  position: relative; /* Make this the reference for absolute positioning */
+  width: 100%;
+  height: 16rem;
+}
+
+.embla-product-details {
+  position: absolute;
+  bottom: 0; /* Position at the bottom of the image */
+  left: 0;
+  width: 100%; /* Take full width of parent */
+  color: white;
+  padding: 0.5rem;
+  text-align: center;
+}
+
+/* Desktop view */
 @media (min-width: 768px) {
-  .embla{
-    height: 80vh;
-    width: 100vw;
+  .embla {
+      height: 80vh;
+      width: 100vw;
   }
-    .embla__slide img {
-        width: 100%; /* Desktop */
-    }
+
+  .embla__slide {
+      width: 100vw;
+      height: 80vh;
+  }
+
+  .embla__slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Cover full screen */
+  }
+
+  .embla-product-slide {
+      height: 80vh;
+  }
+
+  .embla-product-details {
+      font-size: 1.5rem; /* Increase font size for better visibility */
+      padding: 1rem;
+  }
 }
 /* categories Css */
 .categories{

@@ -1,3 +1,4 @@
+'use client'
 import { db } from "../../api/firebase";
 import { doc, getDoc } from "firebase/firestore";
 import styles from "./ProductDetails.module.css";
@@ -30,6 +31,9 @@ export default async function ProductDetails({ params }) {
         <h1 className={styles.productName}>{product.name}</h1>
         <p className={styles.productDescription}>{product.description}</p>
         <h2 className={styles.productPrice}>{product.price}rs</h2>
+        <a href={product.link} target="_blank" rel="noopener noreferrer">
+      <button className={styles.buyButton}>Buy on Amazon</button>
+    </a>
       </div>
     </div>
   );

@@ -29,7 +29,7 @@ export default function Home({ children }) {
       // Timer for video (e.g., 3 seconds)
       const videoTimer = setTimeout(() => {
         setShowVideo(false); // Hide video after playback
-      }, 1000); // Adjust the duration to match the video length
+      }, 2000); // Adjust the duration to match the video length
 
       return () => clearTimeout(videoTimer); // Cleanup video timer
     }
@@ -56,7 +56,7 @@ export default function Home({ children }) {
           <ImageSlider/>
           <Trending/>
           <Bestseller />
-          <CategoryImg />
+          {/* <CategoryImg /> */}
           <Navbar />
           {children}
           <Footer />

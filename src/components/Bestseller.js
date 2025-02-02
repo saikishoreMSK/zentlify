@@ -6,6 +6,7 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "./ImageSlider.css";
+import Link from "next/link";
 
 const Bestseller = () => {
   const [products, setProducts] = useState([]);
@@ -48,6 +49,7 @@ const Bestseller = () => {
         >
           {products.map((product) => (
             <SwiperSlide key={product.id}>
+              <Link href={`/products/${product.id}`}>
               <div className="product-slide">
                 <img
                   src={product.image || "/placeholder.jpg"} // Placeholder image
@@ -61,6 +63,7 @@ const Bestseller = () => {
                   </button>
                 </div>
               </div>
+              </Link>
             </SwiperSlide>
           ))}
           <SwiperSlide>
