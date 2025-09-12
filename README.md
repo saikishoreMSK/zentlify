@@ -25,7 +25,7 @@ Zentlify is a modern Amazon affiliate website built with [Next.js](https://nextj
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/zentlify.git
+   git clone https://github.com/saikishoreMSK/zentlify.git
    cd zentlify
    ```
 
