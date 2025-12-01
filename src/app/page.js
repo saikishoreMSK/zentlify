@@ -42,7 +42,7 @@ export default function Home({ children }) {
       ) : showVideo ? (
         <div className="video-container">
           <video
-            src="/zentlify-logo.mp4" // Replace with the actual path
+            src="/zentlify-logo.mp4"
             autoPlay
             muted
             className="logo-video"

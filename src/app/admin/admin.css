@@ -1,3 +1,25 @@
+  /* Zentlify logo animation */
+  .video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99; /* Ensure it is on top of everything */
+    animation: fadeOut 1s ease-in-out forwards; /* Add fade-out animation */
+    animation-delay: 2s; /* Match the video playback time */
+  }
+
+  .logo-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
 /* General Styling */
 .admin-panel {
     display: flex;
