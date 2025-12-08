@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { db } from "../../api/firebase";
 import { collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { Box, Pagination } from "@mui/material";
 import "./ManageProducts.css";
 
 const ManageProducts1 = () => {
@@ -10,6 +11,8 @@ const ManageProducts1 = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [editingProduct, setEditingProduct] = useState(null);
+  const ITEMS_PER_PAGE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
   const [editForm, setEditForm] = useState({
     name: "",
     categories: [],
@@ -49,6 +52,7 @@ const ManageProducts1 = () => {
       product.name.toLowerCase().includes(query)
     );
     setFilteredProducts(results);
+    setCurrentPage(1);
   };
 
   const handleFilter = (category) => {
@@ -61,6 +65,7 @@ const ManageProducts1 = () => {
     } else {
       setFilteredProducts(products);
     }
+    setCurrentPage(1);
   };
 
   const handleEdit = (product) => {
@@ -89,6 +94,17 @@ const ManageProducts1 = () => {
       console.error("Error updating product:", error);
     }
   };
+
+  // 💡 PAGINATION CALCULATIONS
+    const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const currentProducts = filteredProducts.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    
+    const handlePageChange = (newPage) => {
+        setCurrentPage(newPage);
+        // Optional: Scroll to the top of the list when changing pages
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
   return (
     <div className="manage-products-container">
@@ -127,7 +143,7 @@ const ManageProducts1 = () => {
       </div>
 
       <div className="products-list">
-        {filteredProducts.map((product) => (
+        {currentProducts.map((product) => (
           <div key={product.id} className="product-item">
             {/* Product Image */}
             <div className="product-image">
@@ -143,9 +159,6 @@ const ManageProducts1 = () => {
               <h3>{product.name}</h3>
               <p>
                 <strong>Category:</strong> {product.categories?.join(", ")}
-              </p>
-              <p>
-                <strong>Description:</strong> {product.description}
               </p>
               <p>
                 <strong>Amazon Link:</strong>{" "}
@@ -173,6 +186,30 @@ const ManageProducts1 = () => {
           </div>
         ))}
       </div>
+
+      {/* 💡 Display No Products Message */}
+        {currentProducts.length === 0 && (
+            <p style={{ textAlign: 'center', width: '100%', padding: '20px' }}>
+                No products found matching your criteria.
+            </p>
+        )}
+
+      
+      {totalPages > 1 && (
+          <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+              <Pagination
+                  // Total number of pages
+                  count={totalPages}
+                  // Current active page
+                  page={currentPage}
+                  // Event handler provided by MUI (value is the new page number)
+                  onChange={(event, value) => handlePageChange(value)} 
+                  // Use primary theme color
+                  color="primary"
+                  size="large"
+              />
+          </Box>
+      )}
 
       {/* Edit Product Form */}
 {editingProduct && (

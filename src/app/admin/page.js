@@ -1,113 +1,156 @@
 // src/app/admin/page.js
+
 "use client";
-import { useState } from "react";
-import { useSession, signOut } from "next-auth/react"; // <-- NEW IMPORTS
-import { useRouter } from "next/navigation"; // <-- NEW IMPORT
-import AddProduct from "./AddProduct/page"; 
-import ManageProducts from "./ManageProducts/page"; 
+import React, { useState, useEffect } from "react"; // Ensure React is imported
+import { useSession, signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import AddProduct from "./AddProduct/page";
+import ManageProducts from "./ManageProducts/page";
 import Loader from "@/components/Loader";
-import { useEffect } from "react";
-import './admin.css';
+// 💡 NEW MUI IMPORTS
+import { 
+    Box, 
+    Typography, 
+    Button as MuiButton, 
+    CircularProgress, 
+    AppBar, 
+    Toolbar, 
+    Container, 
+    Stack 
+} from '@mui/material';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import ListAltIcon from '@mui/icons-material/ListAlt';
+// import './admin.css'; // This file will be mostly replaced by MUI styles
 
 const AdminPage = () => {
-  const [activeComponent, setActiveComponent] = useState("addProduct");
-  
-  // Get the session status and data
-  const { data: session, status } = useSession();
-  const router = useRouter();
+    // ... (rest of state and hooks remain the same)
+    const [activeComponent, setActiveComponent] = useState("addProduct");
+    const { data: session, status } = useSession();
+    const router = useRouter();
 
-
-  const [showLoader, setShowLoader] = useState(true);
+    const [showLoader, setShowLoader] = useState(true);
     const [showVideo, setShowVideo] = useState(false);
-  
-    useEffect(() => {
-      const loaderTimer = setTimeout(() => {
-        setShowLoader(false);
-        setShowVideo(true); // Show video after loader
-      }, 1000); 
-  
-      return () => clearTimeout(loaderTimer); 
-    }, []);
-    useEffect(() => {
-      if (showVideo) {
-        // Timer for video (e.g., 3 seconds)
-        const videoTimer = setTimeout(() => {
-          setShowVideo(false); // Hide video after playback
-        }, 2000); // Adjust the duration to match the video length
-  
-        return () => clearTimeout(videoTimer); // Cleanup video timer
-      }
-    }, [showVideo]);
 
-  // 1. Handle Loading State
-  
-if (status === "loading") {
-  return (
-    <>
-      {showLoader ? (
-        <Loader />
-      ) : showVideo ? (
-        <div className="video-container">
-          <video
-            src="/zentlify-logo.mp4"
-            autoPlay
-            muted
-            className="logo-video"
-          />
-        </div>
-      ) : null}
-    </>
-  );
-}
+    // ... (useEffect hooks remain the same)
 
+    // ... (Auth/Loading/Unauthenticated Handlers remain the same)
+    
+// --- Auth/Loading/Unauthenticated Handlers ---
 
-  // 2. Handle Unauthenticated State (Fallback, should be caught by middleware)
-  // We check the role here just in case the middleware was bypassed or for extra security.
-  if (status === "unauthenticated" || session?.user?.role !== "admin") {
-    // Redirect to login page if not signed in or not an admin
-    // The middleware should already handle this, but this protects the client component.
-    router.push('/login');
-    return null; // Don't render anything while redirecting
-  }
+    // 1. Handle Loading State
+    if (status === "loading") {
+        return (
+            // Use Box and CircularProgress for cleaner loading state
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
+                {showLoader || showVideo ? (
+                    // Keep your video/loader logic here, wrapped in a Box if needed
+                    <Box>
+                         {showLoader ? (
+                            <Loader />
+                        ) : showVideo ? (
+                            <div className="video-container">
+                                <video
+                                    src="/zentlify-logo.mp4"
+                                    autoPlay
+                                    muted
+                                    className="logo-video"
+                                />
+                            </div>
+                        ) : null}
+                    </Box>
+                ) : (
+                    <CircularProgress /> // Show default loader after video/initial loader is gone
+                )}
+                
+                <Typography variant="h6" sx={{ mt: 2 }}>
+                    Authenticating...
+                </Typography>
+            </Box>
+        );
+    }
+
+    // 2. Handle Unauthenticated State
+    if (status === "unauthenticated" || session?.user?.role !== "admin") {
+        router.push('/login');
+        return null;
+    }
 
 
-  // 3. Render the Dashboard (only runs if status is 'authenticated' and role is 'admin')
-  return (
-    <div className="admin-panel">
-      
-      <div className="flex items-center justify-between p-4 bg-gray-100 shadow-md">
-        <h1 className="text-2xl font-bold">Welcome, {session.user.name || 'Admin'}</h1>
-        <button
-          onClick={() => signOut({ callbackUrl: '/' })} // Sign out and redirect to home page
-          className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition duration-150"
-        >
-          Sign Out
-        </button>
-      </div>
-      
-      {/* Navbar */}
-      <div className="navbar">
-        <button
-          className={activeComponent === "addProduct" ? "active" : ""}
-          onClick={() => setActiveComponent("addProduct")}
-        >
-          Add Products
-        </button>
-        <button
-          className={activeComponent === "manageProducts" ? "active" : ""}
-          onClick={() => setActiveComponent("manageProducts")}
-        >
-          Manage Products
-        </button>
-      </div>
+    // 3. Render the Dashboard
+    return (
+        <Box sx={{ minHeight: '100vh', bgcolor: '#FDF7F4' }}>
+            
+            {/* Header / App Bar */}
+            <AppBar position="static" sx={{ bgcolor: '#1e1e1e' }}>
+                <Toolbar>
+                  {/* Title on the left, takes up remaining space */}
+                  <Typography 
+                      variant="h6" 
+                      component="div" 
+                      sx={{ flexGrow: 1, color: '#f9c74f', fontWeight: 'bold' }}
+                  >
+                      Zentlify Admin Panel
+                  </Typography>
+                  
+                  {/* Sign Out Button (Made very small) */}
+                  <MuiButton
+                      onClick={() => signOut({ callbackUrl: '/' })}
+                      color="error"
+                      variant="contained"
+                      // 1. Use the 'small' size prop
+                      size="small" 
+                      startIcon={<LogoutIcon fontSize="small" />} // 2. Reduce the icon size too
+                      sx={{ 
+                          // 3. Override default minimum width to make it compact
+                          minWidth: 0, 
+                          p: 1, // 4. Reduce padding for a smaller visual footprint
+                          whiteSpace: 'nowrap' // Prevents button content from wrapping
+                      }}
+                  >
+                      Sign Out
+                  </MuiButton>
+              </Toolbar>
+            </AppBar>
+            
+            {/* Main Content Container */}
+            <Container maxWidth="xl" sx={{ mt: 3, mb: 5 }}>
+                
+                {/* Navbar (Tabs) - Use Stack for layout */}
+                <Stack 
+                    direction={{ xs: 'column', sm: 'row' }} 
+                    spacing={2} 
+                    sx={{ mb: 4, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}
+                >
+                    <MuiButton
+                        variant={activeComponent === "addProduct" ? "contained" : "outlined"}
+                        color="primary"
+                        onClick={() => setActiveComponent("addProduct")}
+                        startIcon={<AddCircleOutlineIcon />}
+                        sx={{ minWidth: 200 }}
+                    >
+                        Add Products
+                    </MuiButton>
+                    
+                    <MuiButton
+                        variant={activeComponent === "manageProducts" ? "contained" : "outlined"}
+                        color="primary"
+                        onClick={() => setActiveComponent("manageProducts")}
+                        startIcon={<ListAltIcon />}
+                        sx={{ minWidth: 200 }}
+                    >
+                        Manage Products
+                    </MuiButton>
+                </Stack>
 
-      {/* Main Content */}
-      <div className="main-content">
-        {activeComponent === "addProduct" && <AddProduct />}
-        {activeComponent === "manageProducts" && <ManageProducts />}
-      </div>
-    </div>
-  );
+                {/* Main Content Area */}
+                <Box className="main-content" sx={{ p: { xs: 2, md: 4 }, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 3 }}>
+                    {activeComponent === "addProduct" && <AddProduct />}
+                    {activeComponent === "manageProducts" && <ManageProducts />}
+                </Box>
+              </Container>
+            </Box>
+    );
 };
 
 export default AdminPage;

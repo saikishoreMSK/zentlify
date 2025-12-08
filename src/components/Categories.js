@@ -21,11 +21,11 @@ const Categories = () => {
     <div>
       <ul className="categories">
         {categories.map((category) => (
-          <li key={category} className="category">
             <Link href={`/products?category=${category.toLowerCase()}`} passHref>
+          <li key={category} className="category">
               {category}
-            </Link>
           </li>
+            </Link>
         ))}
       </ul>
     </div>
