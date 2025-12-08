@@ -1,46 +1,128 @@
-// src/app/components/Footer.js
-import React from 'react'
-import { FaFacebookSquare,FaPinterestSquare,FaInstagramSquare } from "react-icons/fa";
+// src/app/components/Footer.js (MUI Refactor)
+
+import React from 'react';
+// 💡 MUI Imports
+import { Container, Grid, Box, Typography, Link, IconButton, List, ListItem, ListItemText } from '@mui/material';
+// Icon Imports (already present)
+import { FaFacebookSquare, FaPinterestSquare, FaInstagramSquare } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 
 const Footer = () => {
+  // Define links data for easy mapping
+  const quickLinks = [
+    { name: 'Home', href: '/' },
+    { name: 'About Us', href: '/about' },
+    { name: 'Products', href: '/products' },
+    { name: 'Contact Us', href: '/contact' },
+    { name: 'FAQs', href: '/faq' },
+  ];
+
+  const socialLinks = [
+    { icon: <FaFacebookSquare />, href: '#' },
+    { icon: <FaInstagramSquare />, href: '#' },
+    { icon: <FaSquareXTwitter />, href: '#' },
+    { icon: <FaPinterestSquare />, href: '#' },
+  ];
+
   return (
-    <footer className="footer">
-  <div className="footer-content">
-    <div className="footer-section about">
-      <h2>Zentlify</h2>
-      <p>Your one-stop shop for the best deals and premium products. Join us and elevate your shopping experience.</p>
-    </div>
+    // 1. Use MUI Box as the main footer wrapper (replaces .footer)
+    <Box
+      component="footer"
+      sx={{
+        backgroundColor: '#1e1e1e', // Dark background
+        color: '#f4f4f4',
+        py: { xs: 4, md: 6 }, // Responsive vertical padding
+        mt: 'auto', // Push footer to the bottom
+      }}
+    >
+      {/* 2. Use MUI Container to center content */}
+      <Container maxWidth="lg">
+        {/* 3. Use MUI Grid for the main three-column layout (replaces .footer-content) */}
+        <Grid container spacing={{ xs: 3, md: 6 }} justifyContent="space-between">
+          
+          {/* Section 1: About */}
+          <Grid item xs={12} sm={6} md={4} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
+            <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#f9c74f', fontWeight: 'bold' }}>
+              Zentlify
+            </Typography>
+            <Typography variant="body2">
+              Your one-stop shop for the best deals and premium products. Join us and elevate your shopping experience.
+            </Typography>
+          </Grid>
 
-    <div className="footer-section links">
-      <h3>Quick Links</h3>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="about">About Us</a></li>
-        <li><a href="products">Products</a></li>
-        <li><a href="contact">Contact Us</a></li>
-        <li><a href="faq">FAQs</a></li>
-      </ul>
-    </div>
+          {/* Section 2: Quick Links */}
+          <Grid item xs={6} sm={3} md={2} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+            <Typography variant="h6" component="h3" gutterBottom sx={{ color: '#f9c74f', fontWeight: 'bold' }}>
+              Quick Links
+            </Typography>
+            {/* Use MUI List for semantic list structure */}
+            <List dense sx={{ p: 0 }}>
+              {quickLinks.map((link) => (
+                <ListItem key={link.name} sx={{ p: 0, py: 0.2 }}>
+                  <Link 
+                    href={link.href} 
+                    color="inherit" 
+                    underline="hover" 
+                    variant="body2"
+                    sx={{
+                      '&:hover': { color: '#f9c74f' },
+                      transition: 'color 0.3s',
+                      width: '100%', // ensures click area is full width
+                      textAlign: { xs: 'center', sm: 'left' }
+                    }}
+                  >
+                    {link.name}
+                  </Link>
+                </ListItem>
+              ))}
+            </List>
+          </Grid>
 
-    <div className="footer-section social">
-      <h3>Follow Us</h3>
-      <div className="social-icons">
-        <a href="#"><FaFacebookSquare /></a>
-        <a href="#"><FaInstagramSquare /></a>
-        <a href="#"><FaSquareXTwitter /></a>
-        <a href="#"><FaPinterestSquare />
-        </a>
-      </div>
-    </div>
-  </div>
+          {/* Section 3: Follow Us */}
+          <Grid item xs={6} sm={3} md={2} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
+            <Typography variant="h6" component="h3" gutterBottom sx={{ color: '#f9c74f', fontWeight: 'bold' }}>
+              Follow Us
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'center', sm: 'left' } }}>
+              {socialLinks.map((link, index) => (
+                <IconButton 
+                  key={index}
+                  component={Link} // Use Link component for external navigation
+                  href={link.href} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  aria-label={link.icon.type.name.replace('Fa', '').replace('Square', '')}
+                  sx={{ 
+                    color: '#f4f4f4', 
+                    '&:hover': { color: '#f9c74f', backgroundColor: 'transparent' },
+                    fontSize: { xs: '1.5rem', md: '1.8rem' }
+                  }}
+                >
+                  {link.icon}
+                </IconButton>
+              ))}
+            </Box>
+          </Grid>
+        </Grid>
 
-  <div className="footer-bottom">
-    <p>&copy; 2024 Zentlify. All Rights Reserved.</p>
-  </div>
-</footer>
+        {/* Footer Bottom (replaces .footer-bottom) */}
+        <Box 
+          sx={{ 
+            textAlign: 'center', 
+            mt: 4, 
+            pt: 2, 
+            borderTop: '1px solid #444', 
+            fontSize: '0.8rem' 
+          }}
+        >
+          <Typography variant="caption" color="text.secondary" sx={{ color: '#aaa' }}>
+            &copy; {new Date().getFullYear()} Zentlify. All Rights Reserved.
+          </Typography>
+        </Box>
 
-  )
+      </Container>
+    </Box>
+  );
 }
 
-export default Footer
+export default Footer;

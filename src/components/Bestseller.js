@@ -41,40 +41,59 @@ const Bestseller = () => {
         <p>No Best Seller products available.</p>
       ) : (
         <Swiper
-          slidesPerView={2.5}
-          spaceBetween={10}
-          grabCursor={true}
-          freeMode={true}
-          className="mySwiper"
-        >
-          {products.map((product) => (
+        slidesPerView={2.5}
+        spaceBetween={10}
+        grabCursor={true}
+        freeMode={true}
+        className="mySwiper"
+      >
+        {products.map((product) => {
+          
+          // ✂️ START OF WORD TRUNCATION LOGIC
+          const productName = product.name || "";
+          const wordLimit = 3;
+          const words = productName.split(" ");
+          const limitedName = words.slice(0, wordLimit).join(" ");
+          const shouldShowEllipsis = words.length > wordLimit;
+          const displayTitle = limitedName + (shouldShowEllipsis ? "..." : "");
+          // ✂️ END OF WORD TRUNCATION LOGIC
+
+          return (
             <SwiperSlide key={product.id}>
               <Link href={`/products/${product.id}`}>
-              <div className="product-slide">
-                <img
-                  src={product.image || "/placeholder.jpg"} // Placeholder image
-                  alt={product.name || "Product"}
-                />
-                <div className="product-slide-des">
-                  <h1>{product.name || "Product Name"}</h1>
-                  <h4>{product.price ? `${product.price}rs` : "Price not available"}</h4>
-                  <button onClick={() => window.open(product.link, "_blank")}>
-                    View on Amazon
-                  </button>
+                <div className="product-slide">
+                  <img
+                    src={product.image || "/placeholder.jpg"} // Use placeholder if no image
+                    alt={product.name || "Product Image"}
+                  />
+                  <div className="product-slide-des">
+                    
+                    {/* 💡 Use the truncated title here */}
+                    <h1>{displayTitle || "Product Name"}</h1> 
+                    
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent link navigation on button click
+                        window.open(product.link, "_blank", "noopener noreferrer");
+                      }}
+                    >
+                      View on Amazon
+                    </button>
+                  </div>
                 </div>
-              </div>
               </Link>
             </SwiperSlide>
-          ))}
-          <SwiperSlide>
-            <button
-              className="swiper-button"
-              onClick={() => alert("Redirecting to all products!")}
-            >
-              View All Products
-            </button>
-          </SwiperSlide>
-        </Swiper>
+          );
+        })}
+        <SwiperSlide>
+          <button
+            className="swiper-button"
+            onClick={() => router.push("/products")}
+          >
+            View All Products
+          </button>
+        </SwiperSlide>
+      </Swiper>
       )}
     </div>
   );

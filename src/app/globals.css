@@ -27,9 +27,9 @@ body{
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 99; /* Ensure it is on top of everything */
-    animation: fadeOut 1s ease-in-out forwards; /* Add fade-out animation */
-    animation-delay: 2s; /* Match the video playback time */
+    z-index: 99; 
+    animation: fadeOut 1s ease-in-out forwards; 
+    animation-delay: 2s; 
   }
 
   .logo-video {

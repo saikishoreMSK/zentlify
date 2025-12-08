@@ -7,6 +7,8 @@ import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../app/api/firebase"; // Adjust the path to match your structure
 import Link from "next/link";
 import "./Components.css";
+import { Box, Typography, Card, CardMedia, CardContent, Button } from "@mui/material"; 
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 export function EmblaCarousel() {
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 2000 })]);
@@ -34,31 +36,69 @@ export function EmblaCarousel() {
     fetchTrendingProducts();
   }, []);
 
-  return (
-    <div className="embla" ref={emblaRef}>
+ return (
+    <Box className="embla" ref={emblaRef} sx={{ mb: 4, overflow: 'hidden' }}>
       <div className="embla__container">
-        {trendingProducts.map((product) => (
-          <div className="embla__slide" key={product.id}>
-            <Link href={`/products/${product.id}`}>
-              <div className="embla-product-slide">
-                <Image
-                  src={product.image || "/placeholder.jpg"} // Use placeholder if no image
-                  width={100}
-                  height={100}
-                  style={{ objectFit: "cover" }}
-                  priority
-                  alt={product.name || "Product Image"}
-                />
-                <div className="embla-product-details">
-                  <h1>{product.name || "Product Name"}</h1>
-                  <p>{product.price ? `${product.price}rs` : "Price not available"}</p>
-                </div>
-                
-              </div>
-            </Link>
-          </div>
-        ))}
+        {trendingProducts.map((product) => {
+          
+          // 💡 START OF CORRECT JAVASCRIPT LOGIC BLOCK
+          const productName = product.name || "";
+          
+          // Split the name, take the first 3 words, and join them back.
+          const wordLimit = 3;
+          const words = productName.split(' ');
+          const limitedName = words.slice(0, wordLimit).join(' ');
+
+          // Check if the original name was longer than the limit to append an ellipsis.
+          const shouldShowEllipsis = words.length > wordLimit;
+
+          // The final displayed text
+          const displayTitle = limitedName + (shouldShowEllipsis ? '...' : '');
+          // 💡 END OF CORRECT JAVASCRIPT LOGIC BLOCK
+
+          return ( // <-- Explicit return for the JSX element
+            <div className="embla__slide" key={product.id}>
+              <Link href={`/products/${product.id}`} passHref>
+                <Card className="embla-product-card">
+                  
+                  {/* Product Image Container */}
+                  <Box className="embla-image-container">
+                    <Image
+                      src={product.image || "/placeholder.jpg"}
+                      width={1200} 
+                      height={600}
+                      priority
+                      alt={product.name || "Product Image"}
+                    />
+                  </Box>
+                  
+                  {/* Product Details Overlay */}
+                  <Box className="embla-details-overlay">
+                    <Typography 
+                      variant="h3" 
+                      component="h1" 
+                      sx={{ mb: 1, fontWeight: 700 }}
+                      className="embla-product-title"
+                    >
+                      {displayTitle || "Product Name"} {/* 💡 USE displayTitle HERE */}
+                    </Typography>
+
+                    {/* MUI Button for Call-to-Action */}
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      endIcon={<ArrowForwardIcon />}
+                      sx={{ mt: 2 }}
+                    >
+                      Shop Now
+                    </Button>
+                  </Box>
+                </Card>
+              </Link>
+            </div>
+          );
+        })}
       </div>
-    </div>
+    </Box>
   );
 }

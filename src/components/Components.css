@@ -1,67 +1,100 @@
+/* EmblaCarousal.css */
+
+/* General Carousel Structure */
 .embla {
-  height: 16rem;
+    height: 16rem; /* Mobile height */
 }
 
 .embla__slide {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 0;
 }
 
-.embla__slide img {
-  height: 100%;
-  width: 100%;
-  object-fit: contain; /* Maintain aspect ratio and fill */
+/* Card Styling - The individual slide content container */
+.embla-product-card {
+    position: relative;
+    width: 100%;
+    height: 100%; /* The card will take the height of the .embla container */
+    overflow: hidden; /* Ensures the image doesn't bleed out */
+    border-radius: 12px; /* Soft rounded corners */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    cursor: pointer;
 }
 
-.embla-product-slide {
-  position: relative; /* Make this the reference for absolute positioning */
-  width: 100%;
-  height: 16rem;
+/* Image container and image styling */
+.embla-image-container {
+    width: 100%;
+    height: 100%;
 }
 
-.embla-product-details {
-  position: absolute;
-  bottom: 0; /* Position at the bottom of the image */
-  left: 0;
-  width: 100%; /* Take full width of parent */
-  color: white;
-  padding: 0.5rem;
-  text-align: center;
+.embla-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the image covers the area nicely */
+    transition: transform 0.5s ease-in-out;
 }
 
-/* Desktop view */
+/* Hover effect for dynamism */
+.embla-product-card:hover .embla-image-container img {
+    transform: scale(1.05); /* Slightly zoom on hover */
+}
+
+
+/* 💡 NEW: Details Overlay (The crucial stylistic element) */
+.embla-details-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    text-align: center;
+    
+    /* Semi-transparent dark overlay for contrast */
+    background: rgba(0, 0, 0, 0.4); 
+    color: #ffffff; /* White text */
+    padding: 20px;
+    transition: background 0.3s ease;
+}
+
+.embla-product-card:hover .embla-details-overlay {
+    background: rgba(0, 0, 0, 0.55); /* Darken slightly on hover */
+}
+
+.embla-product-title {
+    /* Use Tailwind's text sizing here or keep MUI h3 */
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8); /* Text shadow for legibility */
+}
+
+
+/* Desktop view (Keep your media queries) */
 @media (min-width: 768px) {
-  .embla {
-      height: 80vh;
-      width: 100vw;
-  }
+    .embla {
+        height: 80vh; /* Large height for desktop view */
+        width: 100vw;
+    }
 
-  .embla__slide {
-      width: 100vw;
-      height: 80vh;
-  }
+    .embla__slide {
+        height: 80vh;
+    }
 
-  .embla__slide img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover; /* Cover full screen */
-  }
+    .embla-product-card {
+        height: 80vh;
+    }
 
-  .embla-product-slide {
-      height: 80vh;
-  }
-
-  .embla-product-details {
-      font-size: 1.5rem; /* Increase font size for better visibility */
-      padding: 1rem;
-  }
+    /* Adjust font size for desktop */
+    .embla-product-title {
+        font-size: 3rem !important; /* Larger title for impact */
+    }
 }
 /* categories Css */
 .categories{
-    background-color: aquamarine;
+    /* background-color: aquamarine; */
     height: 6rem;
     padding: 0.5rem;
     display: flex;
@@ -194,8 +227,74 @@
     transform: translateX(-100%); /* End position, moving left */
   }
 }
+
+/* Trending Page */
+/* Main container for the trending items */
+.trending {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Two columns on smaller screens */
+  gap: 16px; /* Space between the cards */
+  padding: 16px; /* Padding around the container */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Individual card styling */
+.trending-card {
+  position: relative; /* Allows positioning the title inside the image */
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  overflow: hidden; /* Ensures the title doesn't overflow the image */
+  height: 250px; /* Taller card height */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Image styling */
+.trending-card img {
+  width: 100%;
+  height: 100%; /* Make the image fill the card */
+  object-fit: cover; 
+  border-radius: 12px; /* Rounded corners */
+}
+
+/* Title styling (inside the image) */
+.trending-title {
+  position: absolute; 
+  bottom: 10px; 
+  left: 10px;
+  font-size: 1rem;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.5); 
+  padding: 5px 10px; 
+  border-radius: 4px; 
+}
+
+/* Hover effect for cards */
+.trending-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive design for mobile */
+@media (max-width: 767px) {
+  .trending {
+    grid-template-columns: repeat(2, 1fr); /* Exactly two columns on mobile */
+    gap: 12px; /* Reduce gap for smaller screens */
+  }
+
+  .trending-card {
+    height: 260px; /* Adjust card height for smaller screens */
+  }
+
+  .trending-title {
+    font-size: 0.9rem; /* Slightly smaller text on mobile */
+  }
+}
+
+
 /* Footer */
-.footer {
+/* .footer {
   background-color: #1e1e1e;
   color: #f4f4f4;
   padding: 1rem .5rem;
@@ -280,69 +379,4 @@
   .social-icons {
     justify-content: center;
   }
-}
-
-/* Trending Page */
-/* Main container for the trending items */
-.trending {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Two columns on smaller screens */
-  gap: 16px; /* Space between the cards */
-  padding: 16px; /* Padding around the container */
-  justify-content: center;
-  align-items: center;
-}
-
-/* Individual card styling */
-.trending-card {
-  position: relative; /* Allows positioning the title inside the image */
-  background-color: #f9f9f9;
-  border-radius: 12px;
-  overflow: hidden; /* Ensures the title doesn't overflow the image */
-  height: 250px; /* Taller card height */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Image styling */
-.trending-card img {
-  width: 100%;
-  height: 100%; /* Make the image fill the card */
-  object-fit: cover; /* Ensure the image maintains aspect ratio */
-  border-radius: 12px; /* Rounded corners */
-}
-
-/* Title styling (inside the image) */
-.trending-title {
-  position: absolute; /* Place title over the image */
-  bottom: 10px; /* Position it at the bottom left */
-  left: 10px;
-  color: white; /* White text for visibility */
-  font-size: 1rem;
-  font-weight: bold;
-  background: rgba(0, 0, 0, 0.5); /* Slightly transparent black background */
-  padding: 5px 10px; /* Add padding around the text */
-  border-radius: 4px; /* Rounded corners for the text background */
-}
-
-/* Hover effect for cards */
-.trending-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Responsive design for mobile */
-@media (max-width: 767px) {
-  .trending {
-    grid-template-columns: repeat(2, 1fr); /* Exactly two columns on mobile */
-    gap: 12px; /* Reduce gap for smaller screens */
-  }
-
-  .trending-card {
-    height: 260px; /* Adjust card height for smaller screens */
-  }
-
-  .trending-title {
-    font-size: 0.9rem; /* Slightly smaller text on mobile */
-  }
-}
+} */

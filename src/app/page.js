@@ -57,7 +57,7 @@ export default function Home({ children }) {
           <Trending/>
           <Bestseller />
           {/* <CategoryImg /> */}
-          <Navbar />
+          {/* <Navbar /> */}
           {children}
           <Footer />
         </>
