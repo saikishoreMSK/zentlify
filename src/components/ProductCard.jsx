@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Card, CardContent, Typography, Button, Box } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ProductBadge from "@/components/ProductBadge";
+import RatingStars from "@/components/RatingStars";
 import { trackClick } from "@/lib/trackClick";
 
 export default function ProductCard({ product }) {
@@ -75,6 +76,9 @@ export default function ProductCard({ product }) {
           >
             {product.name || "Product"}
           </Typography>
+          <Box sx={{ mt: 0.5, minHeight: 20 }}>
+            <RatingStars value={product.zentlifyScore} />
+          </Box>
         </CardContent>
       </Box>
 

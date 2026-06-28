@@ -4,15 +4,18 @@
 // fetched separately by each component in the browser.
 
 import { EmblaCarousel } from "@/components/Carousel";
+import BannerHero from "@/components/BannerHero";
 import Categories from "@/components/Categories";
 import Bestseller from "@/components/Bestseller";
 import ImageSlider from "@/components/ImageSlider";
 import Trending from "@/components/Trending";
 import IntroOverlay from "@/components/IntroOverlay";
 import { getProductsByCategory, getPopularProducts } from "@/lib/products";
+import { getActiveBanners } from "@/lib/banners";
 
 export default async function Home() {
-  const [trending, popular] = await Promise.all([
+  const [banners, trending, popular] = await Promise.all([
+    getActiveBanners(),
     getProductsByCategory("Trending"),
     getPopularProducts(10),
   ]);
@@ -20,7 +23,11 @@ export default async function Home() {
   return (
     <>
       <IntroOverlay />
-      <EmblaCarousel products={trending} />
+      {banners.length > 0 ? (
+        <BannerHero banners={banners} />
+      ) : (
+        <EmblaCarousel products={trending} />
+      )}
       <Categories />
       <ImageSlider products={trending} />
       <Trending />

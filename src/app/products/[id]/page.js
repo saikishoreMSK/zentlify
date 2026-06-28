@@ -11,6 +11,8 @@ import AffiliateDisclosure from "@/components/AffiliateDisclosure";
 import AffiliateButton from "@/components/AffiliateButton";
 import ProductBadge from "@/components/ProductBadge";
 import ProductCard from "@/components/ProductCard";
+import ProductGallery from "@/components/ProductGallery";
+import RatingStars from "@/components/RatingStars";
 import SectionHeading from "@/components/SectionHeading";
 import { Grid, Box } from "@mui/material";
 import { getRelatedProducts, getPopularProducts } from "@/lib/products";
@@ -99,22 +101,12 @@ export default async function ProductDetails({ params }) {
       />
       <div className={styles.container}>
         <div className={styles.imageContainer}>
-          {/* If you stay with <img>, ensure product.image is a valid URL */}
-          <img
-            src={product.image}
+          <ProductGallery
+            images={
+              product.images?.length ? product.images : [product.image]
+            }
             alt={product.name}
-            className={styles.productImage}
           />
-          {/* Or with next/image:
-          <Image
-            src={product.image}
-            alt={product.name}
-            width={640}
-            height={640}
-            className={styles.productImage}
-            priority
-          />
-          */}
         </div>
 
         <div className={styles.detailsContainer}>
@@ -124,6 +116,18 @@ export default async function ProductDetails({ params }) {
             </div>
           )}
           <h1 className={styles.productName}>{product.name}</h1>
+          {product.zentlifyScore ? (
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <RatingStars
+                value={product.zentlifyScore}
+                size="medium"
+                showNumber
+              />
+              <span style={{ fontSize: "0.8rem", color: "#777" }}>
+                Zentlify Score
+              </span>
+            </div>
+          ) : null}
           {product.description && (
             <p className={styles.productDescription}>{product.description}</p>
           )}

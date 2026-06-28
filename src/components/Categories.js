@@ -2,12 +2,10 @@
 import React from "react";
 import Link from "next/link";
 import { Box, Chip } from "@mui/material";
-
-// Keep in sync with the filter options in products/components/Radio.jsx so
-// every category link actually returns results.
-const categories = ["Home", "Dogs", "Cats", "Tech", "Cars", "Kids", "Gifts"];
+import { useCategories } from "@/lib/useCategories";
 
 const Categories = () => {
+  const categories = useCategories();
   return (
     <Box
       sx={{

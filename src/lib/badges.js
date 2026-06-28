@@ -12,6 +12,13 @@ export const ALLOWED_BADGES = [
   "Limited Time",
 ];
 
+// Clamp an editorial "Zentlify Score" rating to 0–5 in 0.5 steps.
+export function clampScore(v) {
+  const n = Number(v);
+  if (!Number.isFinite(n) || n <= 0) return 0;
+  return Math.min(5, Math.round(n * 2) / 2);
+}
+
 // Display colors per badge (background, text).
 export const BADGE_COLORS = {
   "Editor's Pick": { bg: "#6c5ce7", fg: "#fff" },

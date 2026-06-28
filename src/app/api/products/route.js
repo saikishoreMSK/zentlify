@@ -6,17 +6,9 @@ import { revalidateTag } from "next/cache";
 import { getAdminDb } from "@/app/api/firebaseAdmin";
 import { getAdminSession } from "@/lib/requireAdmin";
 import { PRODUCTS_TAG } from "@/lib/products";
-import { ALLOWED_BADGES } from "@/lib/badges";
-
-const ALLOWED_CATEGORIES = [
-  "Dogs",
-  "Cats",
-  "Home",
-  "Tech",
-  "Cars",
-  "Trending",
-  "Best",
-];
+import { getCategories } from "@/lib/categories";
+import { SPECIAL_CATEGORIES } from "@/lib/categoryConstants";
+import { ALLOWED_BADGES, clampScore } from "@/lib/badges";
 
 export async function POST(request) {
   const session = await getAdminSession();
@@ -31,15 +23,23 @@ export async function POST(request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, description = "", link = "", image } = payload;
+  const { name, description = "", link = "" } = payload;
+  const allowed = new Set([...(await getCategories()), ...SPECIAL_CATEGORIES]);
   const categories = Array.isArray(payload.categories)
-    ? payload.categories.filter((c) => ALLOWED_CATEGORIES.includes(c))
+    ? payload.categories.filter((c) => allowed.has(c))
     : [];
   const badge = ALLOWED_BADGES.includes(payload.badge) ? payload.badge : "";
 
+  // Support multiple images; keep `image` as the primary for back-compat.
+  const images = Array.isArray(payload.images)
+    ? payload.images.filter((u) => typeof u === "string" && u)
+    : [];
+  const image = images[0] || (typeof payload.image === "string" ? payload.image : "");
+  const zentlifyScore = clampScore(payload.zentlifyScore);
+
   if (!name || !image) {
     return NextResponse.json(
-      { error: "name and image are required" },
+      { error: "name and at least one image are required" },
       { status: 400 }
     );
   }
@@ -50,7 +50,9 @@ export async function POST(request) {
       description,
       link,
       image,
+      images: images.length ? images : [image],
       badge,
+      zentlifyScore,
       categories,
       clickCount: 0,
       createdAt: new Date().toISOString(),

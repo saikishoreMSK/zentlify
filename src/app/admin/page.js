@@ -1,156 +1,251 @@
 // src/app/admin/page.js
-
 "use client";
-import React, { useState, useEffect } from "react"; // Ensure React is imported
+import React, { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import AddProduct from "./AddProduct/page";
 import ManageProducts from "./ManageProducts/page";
-import Loader from "@/components/Loader";
-// 💡 NEW MUI IMPORTS
-import { 
-    Box, 
-    Typography, 
-    Button as MuiButton, 
-    CircularProgress, 
-    AppBar, 
-    Toolbar, 
-    Container, 
-    Stack 
-} from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import ListAltIcon from '@mui/icons-material/ListAlt';
-// import './admin.css'; // This file will be mostly replaced by MUI styles
+import Dashboard from "./Dashboard";
+import Banners from "./Banners";
+import CategoryManager from "./CategoryManager";
+import Tools from "./Tools";
+import ToastProvider from "@/components/ToastProvider";
+import {
+  Box,
+  Typography,
+  Button,
+  CircularProgress,
+  AppBar,
+  Toolbar,
+  IconButton,
+  Drawer,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import ListAltIcon from "@mui/icons-material/ListAlt";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
+import CategoryIcon from "@mui/icons-material/Category";
+import ImportExportIcon from "@mui/icons-material/ImportExport";
+import MenuIcon from "@mui/icons-material/Menu";
+
+const BRAND = { charcoal: "#1e1e1e", amber: "#FF9900" };
+const DRAWER_WIDTH = 240;
+
+const NAV = [
+  { key: "dashboard", label: "Dashboard", icon: <DashboardIcon /> },
+  { key: "addProduct", label: "Add Product", icon: <AddCircleOutlineIcon /> },
+  { key: "manageProducts", label: "Manage Products", icon: <ListAltIcon /> },
+  { key: "banners", label: "Banners", icon: <ViewCarouselIcon /> },
+  { key: "categories", label: "Categories", icon: <CategoryIcon /> },
+  { key: "tools", label: "Import / Export", icon: <ImportExportIcon /> },
+];
 
 const AdminPage = () => {
-    // ... (rest of state and hooks remain the same)
-    const [activeComponent, setActiveComponent] = useState("addProduct");
-    const { data: session, status } = useSession();
-    const router = useRouter();
+  const [active, setActive] = useState("dashboard");
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-    const [showLoader, setShowLoader] = useState(true);
-    const [showVideo, setShowVideo] = useState(false);
-
-    // ... (useEffect hooks remain the same)
-
-    // ... (Auth/Loading/Unauthenticated Handlers remain the same)
-    
-// --- Auth/Loading/Unauthenticated Handlers ---
-
-    // 1. Handle Loading State
-    if (status === "loading") {
-        return (
-            // Use Box and CircularProgress for cleaner loading state
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', flexDirection: 'column' }}>
-                {showLoader || showVideo ? (
-                    // Keep your video/loader logic here, wrapped in a Box if needed
-                    <Box>
-                         {showLoader ? (
-                            <Loader />
-                        ) : showVideo ? (
-                            <div className="video-container">
-                                <video
-                                    src="/zentlify-logo.mp4"
-                                    autoPlay
-                                    muted
-                                    className="logo-video"
-                                />
-                            </div>
-                        ) : null}
-                    </Box>
-                ) : (
-                    <CircularProgress /> // Show default loader after video/initial loader is gone
-                )}
-                
-                <Typography variant="h6" sx={{ mt: 2 }}>
-                    Authenticating...
-                </Typography>
-            </Box>
-        );
-    }
-
-    // 2. Handle Unauthenticated State
-    if (status === "unauthenticated" || session?.user?.role !== "admin") {
-        router.push('/login');
-        return null;
-    }
-
-
-    // 3. Render the Dashboard
+  if (status === "loading") {
     return (
-        <Box sx={{ minHeight: '100vh', bgcolor: '#FDF7F4' }}>
-            
-            {/* Header / App Bar */}
-            <AppBar position="static" sx={{ bgcolor: '#1e1e1e' }}>
-                <Toolbar>
-                  {/* Title on the left, takes up remaining space */}
-                  <Typography 
-                      variant="h6" 
-                      component="div" 
-                      sx={{ flexGrow: 1, color: '#f9c74f', fontWeight: 'bold' }}
-                  >
-                      Zentlify Admin Panel
-                  </Typography>
-                  
-                  {/* Sign Out Button (Made very small) */}
-                  <MuiButton
-                      onClick={() => signOut({ callbackUrl: '/' })}
-                      color="error"
-                      variant="contained"
-                      // 1. Use the 'small' size prop
-                      size="small" 
-                      startIcon={<LogoutIcon fontSize="small" />} // 2. Reduce the icon size too
-                      sx={{ 
-                          // 3. Override default minimum width to make it compact
-                          minWidth: 0, 
-                          p: 1, // 4. Reduce padding for a smaller visual footprint
-                          whiteSpace: 'nowrap' // Prevents button content from wrapping
-                      }}
-                  >
-                      Sign Out
-                  </MuiButton>
-              </Toolbar>
-            </AppBar>
-            
-            {/* Main Content Container */}
-            <Container maxWidth="xl" sx={{ mt: 3, mb: 5 }}>
-                
-                {/* Navbar (Tabs) - Use Stack for layout */}
-                <Stack 
-                    direction={{ xs: 'column', sm: 'row' }} 
-                    spacing={2} 
-                    sx={{ mb: 4, p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 1 }}
-                >
-                    <MuiButton
-                        variant={activeComponent === "addProduct" ? "contained" : "outlined"}
-                        color="primary"
-                        onClick={() => setActiveComponent("addProduct")}
-                        startIcon={<AddCircleOutlineIcon />}
-                        sx={{ minWidth: 200 }}
-                    >
-                        Add Products
-                    </MuiButton>
-                    
-                    <MuiButton
-                        variant={activeComponent === "manageProducts" ? "contained" : "outlined"}
-                        color="primary"
-                        onClick={() => setActiveComponent("manageProducts")}
-                        startIcon={<ListAltIcon />}
-                        sx={{ minWidth: 200 }}
-                    >
-                        Manage Products
-                    </MuiButton>
-                </Stack>
-
-                {/* Main Content Area */}
-                <Box className="main-content" sx={{ p: { xs: 2, md: 4 }, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 3 }}>
-                    {activeComponent === "addProduct" && <AddProduct />}
-                    {activeComponent === "manageProducts" && <ManageProducts />}
-                </Box>
-              </Container>
-            </Box>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          gap: 2,
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress sx={{ color: BRAND.amber }} />
+        <Typography variant="h6">Authenticating…</Typography>
+      </Box>
     );
+  }
+
+  if (status === "unauthenticated" || session?.user?.role !== "admin") {
+    router.push("/login");
+    return null;
+  }
+
+  const go = (key) => {
+    setActive(key);
+    setMobileOpen(false);
+  };
+
+  const SidebarContent = (
+    <Box
+      sx={{
+        height: "100%",
+        bgcolor: BRAND.charcoal,
+        color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        py: 2,
+      }}
+    >
+      <Typography
+        sx={{
+          px: 3,
+          pb: 2,
+          fontWeight: 800,
+          fontSize: "1.25rem",
+          color: BRAND.amber,
+        }}
+      >
+        Zentlify Admin
+      </Typography>
+
+      <List sx={{ flexGrow: 1 }}>
+        {NAV.map((item) => {
+          const selected = active === item.key;
+          return (
+            <ListItemButton
+              key={item.key}
+              selected={selected}
+              onClick={() => go(item.key)}
+              sx={{
+                mx: 1.5,
+                borderRadius: 2,
+                mb: 0.5,
+                color: selected ? BRAND.charcoal : "#ddd",
+                bgcolor: selected ? BRAND.amber : "transparent",
+                "&.Mui-selected": { bgcolor: BRAND.amber },
+                "&.Mui-selected:hover": { bgcolor: BRAND.amber },
+                "&:hover": { bgcolor: "rgba(255,255,255,0.08)" },
+              }}
+            >
+              <ListItemIcon
+                sx={{ color: selected ? BRAND.charcoal : "#aaa", minWidth: 40 }}
+              >
+                {item.icon}
+              </ListItemIcon>
+              <ListItemText
+                primary={item.label}
+                primaryTypographyProps={{ fontWeight: selected ? 700 : 500 }}
+              />
+            </ListItemButton>
+          );
+        })}
+      </List>
+
+      <Box sx={{ px: 2 }}>
+        <Button
+          fullWidth
+          onClick={() => signOut({ callbackUrl: "/" })}
+          startIcon={<LogoutIcon />}
+          sx={{
+            color: "#fff",
+            borderColor: "rgba(255,255,255,0.3)",
+            justifyContent: "flex-start",
+          }}
+          variant="outlined"
+        >
+          Sign Out
+        </Button>
+      </Box>
+    </Box>
+  );
+
+  const activeLabel = NAV.find((n) => n.key === active)?.label || "";
+
+  return (
+    <ToastProvider>
+      <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#FAFAF8" }}>
+        {/* Desktop sidebar */}
+        <Box
+          component="nav"
+          sx={{
+            width: { md: DRAWER_WIDTH },
+            flexShrink: { md: 0 },
+            display: { xs: "none", md: "block" },
+          }}
+        >
+          <Box
+            sx={{
+              position: "fixed",
+              width: DRAWER_WIDTH,
+              height: "100vh",
+            }}
+          >
+            {SidebarContent}
+          </Box>
+        </Box>
+
+        {/* Mobile drawer */}
+        <Drawer
+          anchor="left"
+          open={mobileOpen}
+          onClose={() => setMobileOpen(false)}
+          ModalProps={{ keepMounted: true }}
+          sx={{
+            display: { xs: "block", md: "none" },
+            "& .MuiDrawer-paper": { width: DRAWER_WIDTH, border: 0 },
+          }}
+        >
+          {SidebarContent}
+        </Drawer>
+
+        {/* Main column */}
+        <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+          {/* Mobile top bar */}
+          <AppBar
+            position="sticky"
+            elevation={0}
+            sx={{
+              display: { md: "none" },
+              bgcolor: BRAND.charcoal,
+            }}
+          >
+            <Toolbar>
+              <IconButton
+                edge="start"
+                color="inherit"
+                onClick={() => setMobileOpen(true)}
+                aria-label="Open admin menu"
+              >
+                <MenuIcon />
+              </IconButton>
+              <Typography sx={{ ml: 1, fontWeight: 700, color: BRAND.amber }}>
+                Zentlify Admin
+              </Typography>
+            </Toolbar>
+          </AppBar>
+
+          <Box component="main" sx={{ p: { xs: 2, md: 4 } }}>
+            <Typography
+              variant="h4"
+              sx={{ fontWeight: 800, mb: 3, display: { xs: "none", md: "block" } }}
+            >
+              {activeLabel}
+            </Typography>
+
+            <Box
+              sx={{
+                bgcolor: "background.paper",
+                borderRadius: 2,
+                boxShadow: 1,
+                p: { xs: 2, md: 3 },
+              }}
+            >
+              {active === "dashboard" && <Dashboard />}
+              {active === "addProduct" && <AddProduct />}
+              {active === "manageProducts" && <ManageProducts />}
+              {active === "banners" && <Banners />}
+              {active === "categories" && <CategoryManager />}
+              {active === "tools" && <Tools />}
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+    </ToastProvider>
+  );
 };
 
 export default AdminPage;

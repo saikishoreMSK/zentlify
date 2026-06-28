@@ -6,17 +6,9 @@ import { getAdminDb } from "@/app/api/firebaseAdmin";
 import { getAdminSession } from "@/lib/requireAdmin";
 import { deleteCloudinaryImage, publicIdFromUrl } from "@/lib/cloudinary";
 import { PRODUCTS_TAG } from "@/lib/products";
-import { ALLOWED_BADGES } from "@/lib/badges";
-
-const ALLOWED_CATEGORIES = [
-  "Dogs",
-  "Cats",
-  "Home",
-  "Tech",
-  "Cars",
-  "Trending",
-  "Best",
-];
+import { getCategories } from "@/lib/categories";
+import { SPECIAL_CATEGORIES } from "@/lib/categoryConstants";
+import { ALLOWED_BADGES, clampScore } from "@/lib/badges";
 
 export async function PUT(request, { params }) {
   const session = await getAdminSession();
@@ -40,13 +32,20 @@ export async function PUT(request, { params }) {
     update.description = payload.description;
   if (typeof payload.link === "string") update.link = payload.link;
   if (typeof payload.image === "string") update.image = payload.image;
+  if (Array.isArray(payload.images)) {
+    const imgs = payload.images.filter((u) => typeof u === "string" && u);
+    update.images = imgs;
+    if (imgs.length) update.image = imgs[0]; // keep primary in sync
+  }
+  if (typeof payload.zentlifyScore !== "undefined") {
+    update.zentlifyScore = clampScore(payload.zentlifyScore);
+  }
   if (typeof payload.badge === "string") {
     update.badge = ALLOWED_BADGES.includes(payload.badge) ? payload.badge : "";
   }
   if (Array.isArray(payload.categories)) {
-    update.categories = payload.categories.filter((c) =>
-      ALLOWED_CATEGORIES.includes(c)
-    );
+    const allowed = new Set([...(await getCategories()), ...SPECIAL_CATEGORIES]);
+    update.categories = payload.categories.filter((c) => allowed.has(c));
   }
 
   if (Object.keys(update).length === 0) {

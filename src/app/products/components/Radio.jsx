@@ -1,8 +1,13 @@
 "use client"
 import React from 'react';
 import styled from 'styled-components';
+import { useCategories } from '@/lib/useCategories';
+import { SPECIAL_CATEGORIES } from '@/lib/categoryConstants';
 
 const Radio = ({ onCategoryChange }) => {
+  const categories = useCategories();
+  const options = ["All", ...categories, ...SPECIAL_CATEGORIES];
+
   const handleChange = (e) => {
     onCategoryChange(e.target.value);
   };
@@ -11,46 +16,18 @@ const Radio = ({ onCategoryChange }) => {
     <StyledWrapper>
       <div className="mydict">
         <div>
-          <label>
-            <input type="radio" name="radio" value="All" defaultChecked onChange={handleChange} />
-            <span>All</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Dogs" onChange={handleChange} />
-            <span>Dogs</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Cats" onChange={handleChange} />
-            <span>Cats</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Home" onChange={handleChange} />
-            <span>Home</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Tech" onChange={handleChange} />
-            <span>Tech</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Cars" onChange={handleChange} />
-            <span>Cars</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Kids" onChange={handleChange} />
-            <span>Kids</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Gifts" onChange={handleChange} />
-            <span>Gifts</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Trending" onChange={handleChange} />
-            <span>Trending</span>
-          </label>
-          <label>
-            <input type="radio" name="radio" value="Best" onChange={handleChange} />
-            <span>Best</span>
-          </label>
+          {options.map((opt, i) => (
+            <label key={opt}>
+              <input
+                type="radio"
+                name="radio"
+                value={opt}
+                defaultChecked={i === 0}
+                onChange={handleChange}
+              />
+              <span>{opt}</span>
+            </label>
+          ))}
         </div>
       </div>
     </StyledWrapper>

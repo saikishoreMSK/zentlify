@@ -17,6 +17,18 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // Homepage promo banners — public read, server-only writes (Admin SDK).
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Site config (e.g. editable category list) — public read, server-only writes.
+    match /config/{doc} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // Deny everything else by default.
     match /{document=**} {
       allow read, write: if false;
