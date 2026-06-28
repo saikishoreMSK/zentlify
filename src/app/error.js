@@ -33,10 +33,10 @@ export default function Error({ error, reset }) {
         style={{
           marginTop: 8,
           padding: "10px 20px",
-          background: "#27ae60",
-          color: "#fff",
+          background: "#FF9900",
+          color: "#1e1e1e",
           border: "none",
-          borderRadius: 6,
+          borderRadius: 8,
           cursor: "pointer",
           fontWeight: "bold",
         }}

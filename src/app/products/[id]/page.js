@@ -6,14 +6,14 @@ import { doc, getDoc } from "firebase/firestore";
 import { notFound } from "next/navigation";
 import styles from "./ProductDetails.module.css";
 
-import Header from "@/components/Header";
-import ImageSlider from "@/components/ImageSlider";
 import Bestseller from "@/components/Bestseller";
-import Footer from "@/components/Footer";
 import AffiliateDisclosure from "@/components/AffiliateDisclosure";
 import AffiliateButton from "@/components/AffiliateButton";
 import ProductBadge from "@/components/ProductBadge";
-import { getProductsByCategory, getPopularProducts } from "@/lib/products";
+import ProductCard from "@/components/ProductCard";
+import SectionHeading from "@/components/SectionHeading";
+import { Grid, Box } from "@mui/material";
+import { getRelatedProducts, getPopularProducts } from "@/lib/products";
 // import Image from "next/image"; // optional if you switch from <img> to <Image>
 
 async function getProduct(id) {
@@ -77,11 +77,9 @@ export default async function ProductDetails({ params }) {
     return notFound();
   }
 
-  const shortDescription = truncateDescription(product.description);
-
   // Related rows below the fold, fetched once on the server (no client refetch).
-  const [trending, popular] = await Promise.all([
-    getProductsByCategory("Trending"),
+  const [related, popular] = await Promise.all([
+    getRelatedProducts({ ...product, id }, 8),
     getPopularProducts(10),
   ]);
 
@@ -99,7 +97,6 @@ export default async function ProductDetails({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <Header />
       <div className={styles.container}>
         <div className={styles.imageContainer}>
           {/* If you stay with <img>, ensure product.image is a valid URL */}
@@ -127,7 +124,9 @@ export default async function ProductDetails({ params }) {
             </div>
           )}
           <h1 className={styles.productName}>{product.name}</h1>
-          <p className={styles.productDescription}>{shortDescription}</p>
+          {product.description && (
+            <p className={styles.productDescription}>{product.description}</p>
+          )}
 
           {product.link && (
             <AffiliateButton
@@ -145,9 +144,20 @@ export default async function ProductDetails({ params }) {
         </div>
       </div>
 
-      <ImageSlider products={trending} />
+      {related.length > 0 && (
+        <Box sx={{ maxWidth: 1200, mx: "auto", px: 2, pb: 2 }}>
+          <SectionHeading align="left">You may also like</SectionHeading>
+          <Grid container spacing={2}>
+            {related.map((p) => (
+              <Grid item xs={6} sm={4} md={3} key={p.id}>
+                <ProductCard product={p} />
+              </Grid>
+            ))}
+          </Grid>
+        </Box>
+      )}
+
       <Bestseller products={popular} />
-      <Footer />
     </>
   );
 }

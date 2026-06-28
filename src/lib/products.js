@@ -28,6 +28,23 @@ export async function getProductsByCategory(category) {
   return all.filter((p) => p.categories?.includes(category));
 }
 
+// "You may also like" — products that share at least one (non-special) category
+// with the given product, excluding the product itself.
+export async function getRelatedProducts(product, max = 8) {
+  if (!product) return [];
+  const all = await getAllProducts();
+  const skip = new Set(["Trending", "Best"]);
+  const cats = (product.categories || []).filter((c) => !skip.has(c));
+
+  return all
+    .filter(
+      (p) =>
+        p.id !== product.id &&
+        (p.categories || []).some((c) => cats.includes(c))
+    )
+    .slice(0, max);
+}
+
 // "Best Seller" section data: most-clicked products first, topped up with the
 // manual "Best" category until enough click data has accumulated.
 export async function getPopularProducts(max = 10) {

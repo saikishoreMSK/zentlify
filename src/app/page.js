@@ -3,8 +3,6 @@
 // the initial HTML for SEO, and the "Trending" query runs once instead of being
 // fetched separately by each component in the browser.
 
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
 import { EmblaCarousel } from "@/components/Carousel";
 import Categories from "@/components/Categories";
 import Bestseller from "@/components/Bestseller";
@@ -22,13 +20,11 @@ export default async function Home() {
   return (
     <>
       <IntroOverlay />
-      <Header />
       <EmblaCarousel products={trending} />
       <Categories />
       <ImageSlider products={trending} />
       <Trending />
       <Bestseller products={popular} />
-      <Footer />
     </>
   );
 }

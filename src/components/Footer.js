@@ -42,7 +42,7 @@ const Footer = () => {
           
           {/* Section 1: About */}
           <Grid item xs={12} sm={6} md={4} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#f9c74f', fontWeight: 'bold' }}>
+            <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#FF9900', fontWeight: 'bold' }}>
               Zentlify
             </Typography>
             <Typography variant="body2">
@@ -52,7 +52,7 @@ const Footer = () => {
 
           {/* Section 2: Quick Links */}
           <Grid item xs={6} sm={3} md={2} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
-            <Typography variant="h6" component="h3" gutterBottom sx={{ color: '#f9c74f', fontWeight: 'bold' }}>
+            <Typography variant="h6" component="h3" gutterBottom sx={{ color: '#FF9900', fontWeight: 'bold' }}>
               Quick Links
             </Typography>
             {/* Use MUI List for semantic list structure */}
@@ -65,7 +65,7 @@ const Footer = () => {
                     underline="hover" 
                     variant="body2"
                     sx={{
-                      '&:hover': { color: '#f9c74f' },
+                      '&:hover': { color: '#FF9900' },
                       transition: 'color 0.3s',
                       width: '100%', // ensures click area is full width
                       textAlign: { xs: 'center', sm: 'left' }
@@ -80,7 +80,7 @@ const Footer = () => {
 
           {/* Section 3: Follow Us */}
           <Grid item xs={6} sm={3} md={2} sx={{ textAlign: { xs: 'center', sm: 'left' } }}>
-            <Typography variant="h6" component="h3" gutterBottom sx={{ color: '#f9c74f', fontWeight: 'bold' }}>
+            <Typography variant="h6" component="h3" gutterBottom sx={{ color: '#FF9900', fontWeight: 'bold' }}>
               Follow Us
             </Typography>
             <Box sx={{ display: 'flex', gap: 1, justifyContent: { xs: 'center', sm: 'left' } }}>
@@ -94,7 +94,7 @@ const Footer = () => {
                   aria-label={link.icon.type.name.replace('Fa', '').replace('Square', '')}
                   sx={{ 
                     color: '#f4f4f4', 
-                    '&:hover': { color: '#f9c74f', backgroundColor: 'transparent' },
+                    '&:hover': { color: '#FF9900', backgroundColor: 'transparent' },
                     fontSize: { xs: '1.5rem', md: '1.8rem' }
                   }}
                 >

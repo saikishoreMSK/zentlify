@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -7,8 +7,9 @@ import { collection, query, where, getDocs } from "firebase/firestore";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "./ImageSlider.css";
-import Link from "next/link";
-import { trackClick } from "@/lib/trackClick";
+import { Button } from "@mui/material";
+import ProductCard from "@/components/ProductCard";
+import SectionHeading from "@/components/SectionHeading";
 
 const Bestseller = ({ products: productsProp }) => {
   const router = useRouter();
@@ -23,9 +24,14 @@ const Bestseller = ({ products: productsProp }) => {
     const fetchBestSellerProducts = async () => {
       try {
         const productsRef = collection(db, "products");
-        const bestQuery = query(productsRef, where("categories", "array-contains", "Best"));
+        const bestQuery = query(
+          productsRef,
+          where("categories", "array-contains", "Best")
+        );
         const querySnapshot = await getDocs(bestQuery);
-        setFetched(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+        setFetched(
+          querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        );
         setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -35,74 +41,46 @@ const Bestseller = ({ products: productsProp }) => {
     fetchBestSellerProducts();
   }, [usingProps]);
 
+  if (!loading && (!products || products.length === 0)) return null;
+
   return (
-    <div>
-      <h1>Best Seller</h1>
+    <section>
+      <SectionHeading>Best Sellers</SectionHeading>
       {loading ? (
-        <p>Loading...</p>
-      ) : products.length === 0 ? (
-        <p>No Best Seller products available.</p>
+        <p style={{ textAlign: "center", color: "#777" }}>Loading…</p>
       ) : (
         <Swiper
-        slidesPerView={2.5}
-        spaceBetween={10}
-        grabCursor={true}
-        freeMode={true}
-        className="mySwiper"
-      >
-        {products.map((product) => {
-          
-          // ✂️ START OF WORD TRUNCATION LOGIC
-          const productName = product.name || "";
-          const wordLimit = 3;
-          const words = productName.split(" ");
-          const limitedName = words.slice(0, wordLimit).join(" ");
-          const shouldShowEllipsis = words.length > wordLimit;
-          const displayTitle = limitedName + (shouldShowEllipsis ? "..." : "");
-          // ✂️ END OF WORD TRUNCATION LOGIC
-
-          return (
-            <SwiperSlide key={product.id}>
-              <Link href={`/products/${product.id}`}>
-                <div className="product-slide">
-                  <img
-                    src={product.image || "/placeholder.jpg"} // Use placeholder if no image
-                    alt={product.name || "Product Image"}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="product-slide-des">
-                    
-                    {/* 💡 Use the truncated title here */}
-                    <h1>{displayTitle || "Product Name"}</h1> 
-                    
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // Prevent link navigation on button click
-                        e.preventDefault();
-                        trackClick(product.id);
-                        window.open(product.link, "_blank", "noopener,noreferrer");
-                      }}
-                    >
-                      View on Amazon
-                    </button>
-                  </div>
-                </div>
-              </Link>
+          slidesPerView={2.2}
+          spaceBetween={16}
+          grabCursor={true}
+          freeMode={true}
+          breakpoints={{
+            640: { slidesPerView: 3.2 },
+            1024: { slidesPerView: 4.2 },
+          }}
+          className="mySwiper"
+          style={{ padding: "0 16px 24px" }}
+        >
+          {products.map((product) => (
+            <SwiperSlide key={product.id} style={{ height: "auto" }}>
+              <ProductCard product={product} />
             </SwiperSlide>
-          );
-        })}
-        <SwiperSlide>
-          <button
-            className="swiper-button"
-            onClick={() => router.push("/products")}
+          ))}
+          <SwiperSlide
+            style={{ height: "auto", display: "flex", alignItems: "center" }}
           >
-            View All Products
-          </button>
-        </SwiperSlide>
-      </Swiper>
+            <Button
+              variant="outlined"
+              color="secondary"
+              onClick={() => router.push("/products")}
+              sx={{ whiteSpace: "nowrap" }}
+            >
+              View All Products
+            </Button>
+          </SwiperSlide>
+        </Swiper>
       )}
-    </div>
+    </section>
   );
 };
 

@@ -82,7 +82,7 @@ export function EmblaCarousel({ products: productsProp }) {
                     {/* MUI Button for Call-to-Action */}
                     <Button
                       variant="contained"
-                      color="secondary"
+                      color="primary"
                       endIcon={<ArrowForwardIcon />}
                       sx={{ mt: 2 }}
                     >

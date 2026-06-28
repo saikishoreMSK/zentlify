@@ -1,5 +1,15 @@
 import "./globals.css";
+import { Poppins } from "next/font/google";
 import AuthSessionProvider from "@/components/AuthSessionProvider";
+import ThemeRegistry from "@/components/ThemeRegistry";
+import SiteChrome from "@/components/SiteChrome";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-poppins",
+});
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://zentlify.com";
 
@@ -29,9 +39,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" className={poppins.variable}>
       <body>
-        <AuthSessionProvider>{children}</AuthSessionProvider>
+        <ThemeRegistry>
+          <AuthSessionProvider>
+            <SiteChrome>{children}</SiteChrome>
+          </AuthSessionProvider>
+        </ThemeRegistry>
       </body>
     </html>
   );
