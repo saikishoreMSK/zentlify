@@ -10,6 +10,10 @@ import Header from "@/components/Header";
 import ImageSlider from "@/components/ImageSlider";
 import Bestseller from "@/components/Bestseller";
 import Footer from "@/components/Footer";
+import AffiliateDisclosure from "@/components/AffiliateDisclosure";
+import AffiliateButton from "@/components/AffiliateButton";
+import ProductBadge from "@/components/ProductBadge";
+import { getProductsByCategory, getPopularProducts } from "@/lib/products";
 // import Image from "next/image"; // optional if you switch from <img> to <Image>
 
 async function getProduct(id) {
@@ -75,6 +79,12 @@ export default async function ProductDetails({ params }) {
 
   const shortDescription = truncateDescription(product.description);
 
+  // Related rows below the fold, fetched once on the server (no client refetch).
+  const [trending, popular] = await Promise.all([
+    getProductsByCategory("Trending"),
+    getPopularProducts(10),
+  ]);
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -111,23 +121,32 @@ export default async function ProductDetails({ params }) {
         </div>
 
         <div className={styles.detailsContainer}>
+          {product.badge && (
+            <div>
+              <ProductBadge badge={product.badge} />
+            </div>
+          )}
           <h1 className={styles.productName}>{product.name}</h1>
           <p className={styles.productDescription}>{shortDescription}</p>
 
           {product.link && (
-            <a
+            <AffiliateButton
+              productId={id}
               href={product.link}
-              target="_blank"
-              rel="sponsored nofollow noopener noreferrer"
+              className={styles.buyButton}
             >
-              <button className={styles.buyButton}>Buy on Amazon</button>
-            </a>
+              Buy on Amazon
+            </AffiliateButton>
           )}
+          <p style={{ fontSize: "0.9rem", color: "#555", margin: "4px 0 0" }}>
+            💰 Check the latest price on Amazon — prices update in real time.
+          </p>
+          <AffiliateDisclosure />
         </div>
       </div>
 
-      <ImageSlider />
-      <Bestseller />
+      <ImageSlider products={trending} />
+      <Bestseller products={popular} />
       <Footer />
     </>
   );

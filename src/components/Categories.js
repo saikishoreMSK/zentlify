@@ -4,18 +4,9 @@ import Link from "next/link";
 import "./Components.css";
 
 const Categories = () => {
-  const categories = [
-    "Home",
-    "Dogs",
-    "Cats",
-    "Tech",
-    "Gifts",
-    "Cars",
-    "Retro",
-    "Board",
-    "Kids",
-    "Decor",
-  ];
+  // Keep in sync with the filter options in products/components/Radio.jsx so
+  // every category link actually returns results.
+  const categories = ["Home", "Dogs", "Cats", "Tech", "Cars", "Kids", "Gifts"];
 
   return (
     <div>

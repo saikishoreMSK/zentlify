@@ -1,54 +1,33 @@
-"use client";
-import React, { useState, useEffect } from "react";
+// Homepage — now a Server Component. Product data is fetched on the server and
+// passed into the (client) carousels/sliders, so product names and links are in
+// the initial HTML for SEO, and the "Trending" query runs once instead of being
+// fetched separately by each component in the browser.
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { EmblaCarousel } from "@/components/Carousel";
 import Categories from "@/components/Categories";
 import Bestseller from "@/components/Bestseller";
-import Loader from "@/components/Loader";
 import ImageSlider from "@/components/ImageSlider";
 import Trending from "@/components/Trending";
+import IntroOverlay from "@/components/IntroOverlay";
+import { getProductsByCategory, getPopularProducts } from "@/lib/products";
 
-export default function Home() {
-  // Brief branded intro overlay. It sits ON TOP of the content rather than
-  // replacing it, so the page (and its data fetches) render immediately —
-  // important for LCP and conversions on a revenue site.
-  const [intro, setIntro] = useState("loader"); // "loader" | "video" | "done"
-
-  useEffect(() => {
-    const t1 = setTimeout(() => setIntro("video"), 1000);
-    const t2 = setTimeout(() => setIntro("done"), 3000);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, []);
+export default async function Home() {
+  const [trending, popular] = await Promise.all([
+    getProductsByCategory("Trending"),
+    getPopularProducts(10),
+  ]);
 
   return (
     <>
-      {intro !== "done" && (
-        <div className="intro-overlay">
-          {intro === "loader" ? (
-            <Loader />
-          ) : (
-            <div className="video-container">
-              <video
-                src="/zentlify-logo.mp4"
-                autoPlay
-                muted
-                className="logo-video"
-              />
-            </div>
-          )}
-        </div>
-      )}
-
+      <IntroOverlay />
       <Header />
-      <EmblaCarousel />
+      <EmblaCarousel products={trending} />
       <Categories />
-      <ImageSlider />
+      <ImageSlider products={trending} />
       <Trending />
-      <Bestseller />
+      <Bestseller products={popular} />
       <Footer />
     </>
   );

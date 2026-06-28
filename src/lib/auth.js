@@ -4,6 +4,15 @@
 // getServerSession(authOptions) to verify the admin before writing to Firestore.
 
 import CredentialsProvider from "next-auth/providers/credentials";
+import crypto from "crypto";
+
+// Constant-time string comparison to avoid leaking match info via timing.
+function safeEqual(a = "", b = "") {
+  const bufA = Buffer.from(String(a));
+  const bufB = Buffer.from(String(b));
+  if (bufA.length !== bufB.length) return false;
+  return crypto.timingSafeEqual(bufA, bufB);
+}
 
 export const authOptions = {
   // Required for CredentialsProvider without a database.
@@ -32,10 +41,11 @@ export const authOptions = {
           return null;
         }
 
-        if (
-          credentials?.username === VALID_USER &&
-          credentials?.password === VALID_PASS
-        ) {
+        const ok =
+          safeEqual(credentials?.username, VALID_USER) &
+          safeEqual(credentials?.password, VALID_PASS);
+
+        if (ok) {
           return {
             id: "admin-user",
             name: "Zentlify Admin",
@@ -44,6 +54,9 @@ export const authOptions = {
           };
         }
 
+        // Slow down brute-force attempts (best-effort per instance; for
+        // distributed rate-limiting add a store like Upstash Redis).
+        await new Promise((r) => setTimeout(r, 700));
         return null;
       },
     }),

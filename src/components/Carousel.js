@@ -10,31 +10,27 @@ import "./Components.css";
 import { Box, Typography, Card, CardMedia, CardContent, Button } from "@mui/material"; 
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
-export function EmblaCarousel() {
+export function EmblaCarousel({ products: productsProp }) {
   const [emblaRef] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 2000 })]);
-  const [trendingProducts, setTrendingProducts] = useState([]);
+  const usingProps = Array.isArray(productsProp);
+  const [fetched, setFetched] = useState([]);
+  const trendingProducts = usingProps ? productsProp : fetched;
 
   useEffect(() => {
-    // Fetch Trending Products from Firebase
+    // Fallback: only fetch if the server didn't pass data in.
+    if (usingProps) return;
     const fetchTrendingProducts = async () => {
       try {
         const productsRef = collection(db, "products");
         const q = query(productsRef, where("categories", "array-contains", "Trending"));
         const querySnapshot = await getDocs(q);
-
-        const trending = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setTrendingProducts(trending);
+        setFetched(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       } catch (error) {
         console.error("Error fetching trending products:", error);
       }
     };
-
     fetchTrendingProducts();
-  }, []);
+  }, [usingProps]);
 
  return (
     <Box className="embla" ref={emblaRef} sx={{ mb: 4, overflow: 'hidden' }}>

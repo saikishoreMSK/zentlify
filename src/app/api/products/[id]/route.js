@@ -1,9 +1,12 @@
 // Server-side product update/delete. Admin-only.
 
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { getAdminDb } from "@/app/api/firebaseAdmin";
 import { getAdminSession } from "@/lib/requireAdmin";
 import { deleteCloudinaryImage, publicIdFromUrl } from "@/lib/cloudinary";
+import { PRODUCTS_TAG } from "@/lib/products";
+import { ALLOWED_BADGES } from "@/lib/badges";
 
 const ALLOWED_CATEGORIES = [
   "Dogs",
@@ -37,7 +40,9 @@ export async function PUT(request, { params }) {
     update.description = payload.description;
   if (typeof payload.link === "string") update.link = payload.link;
   if (typeof payload.image === "string") update.image = payload.image;
-  if (typeof payload.price !== "undefined") update.price = payload.price;
+  if (typeof payload.badge === "string") {
+    update.badge = ALLOWED_BADGES.includes(payload.badge) ? payload.badge : "";
+  }
   if (Array.isArray(payload.categories)) {
     update.categories = payload.categories.filter((c) =>
       ALLOWED_CATEGORIES.includes(c)
@@ -50,6 +55,7 @@ export async function PUT(request, { params }) {
 
   try {
     await getAdminDb().collection("products").doc(id).update(update);
+    revalidateTag(PRODUCTS_TAG);
     return NextResponse.json({ id });
   } catch (err) {
     console.error("Failed to update product:", err);
@@ -81,6 +87,7 @@ export async function DELETE(request, { params }) {
     }
 
     await docRef.delete();
+    revalidateTag(PRODUCTS_TAG);
     return NextResponse.json({ id });
   } catch (err) {
     console.error("Failed to delete product:", err);

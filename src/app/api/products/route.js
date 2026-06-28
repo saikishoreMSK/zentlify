@@ -2,8 +2,11 @@
 // Firestore rules can deny all client writes.
 
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { getAdminDb } from "@/app/api/firebaseAdmin";
 import { getAdminSession } from "@/lib/requireAdmin";
+import { PRODUCTS_TAG } from "@/lib/products";
+import { ALLOWED_BADGES } from "@/lib/badges";
 
 const ALLOWED_CATEGORIES = [
   "Dogs",
@@ -28,10 +31,11 @@ export async function POST(request) {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const { name, description = "", link = "", image, price = "" } = payload;
+  const { name, description = "", link = "", image } = payload;
   const categories = Array.isArray(payload.categories)
     ? payload.categories.filter((c) => ALLOWED_CATEGORIES.includes(c))
     : [];
+  const badge = ALLOWED_BADGES.includes(payload.badge) ? payload.badge : "";
 
   if (!name || !image) {
     return NextResponse.json(
@@ -46,10 +50,12 @@ export async function POST(request) {
       description,
       link,
       image,
-      price,
+      badge,
       categories,
+      clickCount: 0,
       createdAt: new Date().toISOString(),
     });
+    revalidateTag(PRODUCTS_TAG);
     return NextResponse.json({ id: docRef.id }, { status: 201 });
   } catch (err) {
     console.error("Failed to create product:", err);

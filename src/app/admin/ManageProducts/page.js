@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { db } from "../../api/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { Box, Pagination } from "@mui/material";
+import { ALLOWED_BADGES } from "@/lib/badges";
 import "./ManageProducts.css";
 
 const ManageProducts1 = () => {
@@ -19,6 +20,7 @@ const ManageProducts1 = () => {
     description: "",
     link: "",
     image: "",
+    badge: "",
   });
 
   useEffect(() => {
@@ -82,6 +84,7 @@ const ManageProducts1 = () => {
       description: product.description || "",
       link: product.link || "",
       image: product.image || "",
+      badge: product.badge || "",
     });
   };
 
@@ -165,6 +168,8 @@ const ManageProducts1 = () => {
                 src={product.image || "/placeholder.jpg"}
                 alt={product.name}
                 className="image"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -272,6 +277,17 @@ const ManageProducts1 = () => {
           })
         }
       />
+      <select
+        value={editForm.badge}
+        onChange={(e) => setEditForm({ ...editForm, badge: e.target.value })}
+      >
+        <option value="">No badge</option>
+        {ALLOWED_BADGES.map((b) => (
+          <option key={b} value={b}>
+            {b}
+          </option>
+        ))}
+      </select>
       <div className="modal-actions">
         <button onClick={handleEditSubmit} className="save-button">
           Save

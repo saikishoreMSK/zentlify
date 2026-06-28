@@ -12,6 +12,29 @@ export function publicIdFromUrl(url) {
   return match ? match[1] : null;
 }
 
+// Build a signed-upload payload for the browser. The browser then uploads the
+// file directly to Cloudinary with this signature, so the API secret never
+// leaves the server and the public unsigned preset is no longer needed.
+export function buildUploadSignature(folder = "zentlify") {
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+  const apiKey = process.env.CLOUDINARY_API_KEY;
+  const apiSecret = process.env.CLOUDINARY_API_SECRET;
+
+  if (!cloudName || !apiKey || !apiSecret) {
+    throw new Error("Cloudinary credentials are not configured.");
+  }
+
+  const timestamp = Math.floor(Date.now() / 1000);
+  // Signature must cover exactly the params sent (excluding file, api_key,
+  // cloud_name, resource_type), sorted alphabetically.
+  const signature = crypto
+    .createHash("sha1")
+    .update(`folder=${folder}&timestamp=${timestamp}${apiSecret}`)
+    .digest("hex");
+
+  return { cloudName, apiKey, timestamp, folder, signature };
+}
+
 // Delete an image from Cloudinary by public_id. Returns true on success.
 export async function deleteCloudinaryImage(publicId) {
   if (!publicId) return false;
