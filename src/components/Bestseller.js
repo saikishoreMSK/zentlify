@@ -1,36 +1,39 @@
 "use client"
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useState, useEffect } from "react";
-import { db } from "../app/api/firebase"; 
+import { useRouter } from "next/navigation";
+import { db } from "../app/api/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "./ImageSlider.css";
 import Link from "next/link";
+import { trackClick } from "@/lib/trackClick";
 
-const Bestseller = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Bestseller = ({ products: productsProp }) => {
+  const router = useRouter();
+  const usingProps = Array.isArray(productsProp);
+  const [fetched, setFetched] = useState([]);
+  const [loading, setLoading] = useState(!usingProps);
+  const products = usingProps ? productsProp : fetched;
 
   useEffect(() => {
+    // Fallback: only fetch if the server didn't pass the popular list in.
+    if (usingProps) return;
     const fetchBestSellerProducts = async () => {
       try {
         const productsRef = collection(db, "products");
         const bestQuery = query(productsRef, where("categories", "array-contains", "Best"));
         const querySnapshot = await getDocs(bestQuery);
-        
-        const productsData = querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-        console.log("Fetched Best Products:", productsData); // Debugging
-        setProducts(productsData);
+        setFetched(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
         setLoading(false);
       } catch (error) {
         console.error("Error fetching products:", error);
         setLoading(false);
       }
     };
-
     fetchBestSellerProducts();
-  }, []);
+  }, [usingProps]);
 
   return (
     <div>
@@ -65,6 +68,8 @@ const Bestseller = () => {
                   <img
                     src={product.image || "/placeholder.jpg"} // Use placeholder if no image
                     alt={product.name || "Product Image"}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="product-slide-des">
                     
@@ -74,7 +79,9 @@ const Bestseller = () => {
                     <button
                       onClick={(e) => {
                         e.stopPropagation(); // Prevent link navigation on button click
-                        window.open(product.link, "_blank", "noopener noreferrer");
+                        e.preventDefault();
+                        trackClick(product.id);
+                        window.open(product.link, "_blank", "noopener,noreferrer");
                       }}
                     >
                       View on Amazon

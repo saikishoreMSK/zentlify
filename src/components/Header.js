@@ -1,12 +1,23 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
+import { useState } from "react";
 import styles from "./Header.module.css";
-import { IoIosMenu } from "react-icons/io";
+import { IoIosMenu, IoIosClose } from "react-icons/io";
 import styled from "styled-components";
 import { useRouter } from "next/navigation"; // Use Next.js router for navigation
 
+const NAV_LINKS = [
+  { name: "Home", href: "/" },
+  { name: "Products", href: "/products" },
+  { name: "About", href: "/about" },
+  { name: "Contact", href: "/contact" },
+  { name: "Affiliate Disclosure", href: "/disclosure" },
+];
+
 export default function Header() {
   const router = useRouter(); // Initialize Next.js router
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
@@ -87,8 +98,57 @@ export default function Header() {
       </StyledWrapper>
 
       {/* Right: Menu Bar */}
-      <div className={styles.menuBar}>
-        <IoIosMenu />
+      <div className={styles.menuBar} style={{ position: "relative" }}>
+        <button
+          type="button"
+          aria-label="Toggle navigation menu"
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((o) => !o)}
+          style={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "1.8rem",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {menuOpen ? <IoIosClose /> : <IoIosMenu />}
+        </button>
+
+        {menuOpen && (
+          <nav
+            style={{
+              position: "absolute",
+              top: "calc(100% + 8px)",
+              right: 0,
+              background: "#fff",
+              border: "1px solid #eee",
+              borderRadius: 8,
+              boxShadow: "0 6px 20px rgba(0,0,0,0.12)",
+              minWidth: 180,
+              zIndex: 1000,
+              overflow: "hidden",
+            }}
+          >
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+                style={{
+                  display: "block",
+                  padding: "10px 16px",
+                  color: "#333",
+                  textDecoration: "none",
+                  fontSize: "0.95rem",
+                }}
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+        )}
       </div>
     </header>
   );

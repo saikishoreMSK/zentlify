@@ -10,14 +10,17 @@ import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../app/api/firebase"; // Adjust the path to match your structure
 import Link from "next/link";
-// 💡 MUI imports are not needed here unless you decide to replace <div> and <button> later.
+import { trackClick } from "@/lib/trackClick";
 
-const ImageSlider = () => {
+const ImageSlider = ({ products: productsProp }) => {
   const router = useRouter();
-  const [trendingProducts, setTrendingProducts] = useState([]);
+  const usingProps = Array.isArray(productsProp);
+  const [fetched, setFetched] = useState([]);
+  const trendingProducts = usingProps ? productsProp : fetched;
 
   useEffect(() => {
-    // ... (Your Firebase fetch logic remains the same)
+    // Fallback: only fetch if the server didn't pass data in.
+    if (usingProps) return;
     const fetchTrendingProducts = async () => {
       try {
         const productsRef = collection(db, "products");
@@ -26,20 +29,13 @@ const ImageSlider = () => {
           where("categories", "array-contains", "Trending")
         );
         const querySnapshot = await getDocs(q);
-
-        const trending = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-
-        setTrendingProducts(trending);
+        setFetched(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
       } catch (error) {
         console.error("Error fetching trending products:", error);
       }
     };
-
     fetchTrendingProducts();
-  }, []);
+  }, [usingProps]);
 
   return (
     <div>
@@ -69,16 +65,20 @@ const ImageSlider = () => {
                   <img
                     src={product.image || "/placeholder.jpg"} // Use placeholder if no image
                     alt={product.name || "Product Image"}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="product-slide-des">
                     
                     {/* 💡 Use the truncated title here */}
-                    <h1>{displayTitle || "Product Name"}</h1> 
-                    
+                    <h1>{displayTitle || "Product Name"}</h1>
+
                     <button
                       onClick={(e) => {
-                        e.stopPropagation(); // Prevent link navigation on button click
-                        window.open(product.link, "_blank", "noopener noreferrer");
+                        e.stopPropagation(); // don't trigger the card's Link
+                        e.preventDefault();
+                        trackClick(product.id);
+                        window.open(product.link, "_blank", "noopener,noreferrer");
                       }}
                     >
                       View on Amazon

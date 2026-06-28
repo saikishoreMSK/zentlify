@@ -1,8 +1,9 @@
 'use client';
 import { useEffect, useState } from "react";
 import { db } from "../../api/firebase";
-import { collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { Box, Pagination } from "@mui/material";
+import { ALLOWED_BADGES } from "@/lib/badges";
 import "./ManageProducts.css";
 
 const ManageProducts1 = () => {
@@ -19,6 +20,7 @@ const ManageProducts1 = () => {
     description: "",
     link: "",
     image: "",
+    badge: "",
   });
 
   useEffect(() => {
@@ -35,13 +37,19 @@ const ManageProducts1 = () => {
   }, []);
 
   const handleDelete = async (id) => {
+    if (!confirm("Delete this product? This also removes its image.")) return;
     try {
-      await deleteDoc(doc(db, "products", id));
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const result = await res.json().catch(() => ({}));
+        throw new Error(result.error || "Failed to delete product");
+      }
       setProducts(products.filter((product) => product.id !== id));
       setFilteredProducts(filteredProducts.filter((product) => product.id !== id));
       alert("Product deleted successfully!");
     } catch (error) {
       console.error("Error deleting product:", error);
+      alert(error.message || "Error deleting product");
     }
   };
 
@@ -76,13 +84,21 @@ const ManageProducts1 = () => {
       description: product.description || "",
       link: product.link || "",
       image: product.image || "",
+      badge: product.badge || "",
     });
   };
 
   const handleEditSubmit = async () => {
     try {
-      const docRef = doc(db, "products", editingProduct.id);
-      await updateDoc(docRef, editForm);
+      const res = await fetch(`/api/products/${editingProduct.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editForm),
+      });
+      if (!res.ok) {
+        const result = await res.json().catch(() => ({}));
+        throw new Error(result.error || "Failed to update product");
+      }
       const updatedProducts = products.map((product) =>
         product.id === editingProduct.id ? { ...product, ...editForm } : product
       );
@@ -92,6 +108,7 @@ const ManageProducts1 = () => {
       setEditingProduct(null);
     } catch (error) {
       console.error("Error updating product:", error);
+      alert(error.message || "Error updating product");
     }
   };
 
@@ -151,6 +168,8 @@ const ManageProducts1 = () => {
                 src={product.image || "/placeholder.jpg"}
                 alt={product.name}
                 className="image"
+                loading="lazy"
+                decoding="async"
               />
             </div>
 
@@ -258,6 +277,17 @@ const ManageProducts1 = () => {
           })
         }
       />
+      <select
+        value={editForm.badge}
+        onChange={(e) => setEditForm({ ...editForm, badge: e.target.value })}
+      >
+        <option value="">No badge</option>
+        {ALLOWED_BADGES.map((b) => (
+          <option key={b} value={b}>
+            {b}
+          </option>
+        ))}
+      </select>
       <div className="modal-actions">
         <button onClick={handleEditSubmit} className="save-button">
           Save

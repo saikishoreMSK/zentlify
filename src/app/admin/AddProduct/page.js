@@ -1,16 +1,17 @@
 "use client";
-import { db } from "../../api/firebase"; // Ensure Firestore is configured
-import { collection, addDoc } from "firebase/firestore";
 import { useState } from "react";
 import './addProduct.css'
+import { ALLOWED_BADGES } from "@/lib/badges";
 const AddProduct = () => {
   const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [uploadedImageUrl, setUploadedImageUrl] = useState(""); // Store the Cloudinary image URL
   const [product, setProduct] = useState({
     name: "",
     description: "",
     categories: [],
     link: "",
+    badge: "",
   });
   const [selectedCategories, setSelectedCategories] = useState([]);
 
@@ -20,24 +21,35 @@ const AddProduct = () => {
     if (!file) return;
 
     setLoading(true);
-    const data = new FormData();
-    data.append("file", file);
-    data.append("upload_preset", "zentlify_coudinary");
-    data.append("cloud_name", "dubbgtl97");
-
     try {
+      // 1. Ask our server for a short-lived signed-upload payload (admin-only).
+      const sigRes = await fetch("/api/upload-signature", { method: "POST" });
+      if (!sigRes.ok) throw new Error("Could not authorize upload");
+      const { cloudName, apiKey, timestamp, folder, signature } =
+        await sigRes.json();
+
+      // 2. Upload the file directly to Cloudinary using the signature.
+      const data = new FormData();
+      data.append("file", file);
+      data.append("api_key", apiKey);
+      data.append("timestamp", timestamp);
+      data.append("folder", folder);
+      data.append("signature", signature);
+
       const res = await fetch(
-        "https://api.cloudinary.com/v1_1/dubbgtl97/image/upload",
-        {
-          method: "POST",
-          body: data,
-        }
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+        { method: "POST", body: data }
       );
       const uploadedImgData = await res.json();
-      setUploadedImageUrl(uploadedImgData.url); // Save the uploaded image URL
-      setLoading(false);
+      if (!res.ok || !uploadedImgData.secure_url) {
+        throw new Error(uploadedImgData.error?.message || "Upload failed");
+      }
+      // Prefer the https URL so images load on a secure site without mixed content.
+      setUploadedImageUrl(uploadedImgData.secure_url || uploadedImgData.url);
     } catch (error) {
       console.error("Error uploading image:", error);
+      alert(error.message || "Error uploading image");
+    } finally {
       setLoading(false);
     }
   };
@@ -61,21 +73,34 @@ const AddProduct = () => {
       return;
     }
 
+    setSubmitting(true);
     try {
-      // Save product data to Firestore
-      const docRef = await addDoc(collection(db, "products"), {
-        ...product,
-        categories: selectedCategories,
-        image: uploadedImageUrl, // Use the Cloudinary URL
+      // Save through the secured server API (Admin SDK + session check).
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...product,
+          categories: selectedCategories,
+          image: uploadedImageUrl, // Use the Cloudinary URL
+        }),
       });
 
-      alert(`Product added successfully! ID: ${docRef.id}`);
+      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.error || "Failed to add product");
+      }
+
+      alert(`Product added successfully! ID: ${result.id}`);
       // Reset form
-      setProduct({ name: "", description: "", categories: [], link: "" });
+      setProduct({ name: "", description: "", categories: [], link: "", badge: "" });
       setSelectedCategories([]);
       setUploadedImageUrl("");
     } catch (error) {
       console.error("Error adding product:", error);
+      alert(error.message || "Error adding product");
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -112,12 +137,18 @@ const AddProduct = () => {
         value={product.description}
         onChange={(e) => setProduct({ ...product, description: e.target.value })}
       />
-      <input
-  type="number"
-  placeholder="Price"
-  value={product.price}
-  onChange={(e) => setProduct({ ...product, price: e.target.value })}
-/>
+      {/* Editorial badge (no manual prices — see src/lib/badges.js) */}
+      <select
+        value={product.badge}
+        onChange={(e) => setProduct({ ...product, badge: e.target.value })}
+      >
+        <option value="">No badge</option>
+        {ALLOWED_BADGES.map((b) => (
+          <option key={b} value={b}>
+            {b}
+          </option>
+        ))}
+      </select>
 
       {/* Categories */}
       <div>
@@ -144,7 +175,9 @@ const AddProduct = () => {
       />
 
       {/* Submit Button */}
-      <button type="submit">Add Product</button>
+      <button type="submit" disabled={submitting}>
+        {submitting ? "Adding..." : "Add Product"}
+      </button>
     </form>
   );
 };

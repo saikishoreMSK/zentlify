@@ -14,7 +14,7 @@ const Footer = () => {
     { name: 'About Us', href: '/about' },
     { name: 'Products', href: '/products' },
     { name: 'Contact Us', href: '/contact' },
-    { name: 'FAQs', href: '/faq' },
+    { name: 'Affiliate Disclosure', href: '/disclosure' },
   ];
 
   const socialLinks = [
@@ -115,6 +115,9 @@ const Footer = () => {
             fontSize: '0.8rem' 
           }}
         >
+          <Typography variant="caption" sx={{ color: '#aaa', display: 'block', mb: 1 }}>
+            As an Amazon Associate, Zentlify earns from qualifying purchases.
+          </Typography>
           <Typography variant="caption" color="text.secondary" sx={{ color: '#aaa' }}>
             &copy; {new Date().getFullYear()} Zentlify. All Rights Reserved.
           </Typography>
