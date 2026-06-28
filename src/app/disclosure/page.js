@@ -1,8 +1,5 @@
 // Affiliate disclosure page (server component, so it gets proper metadata).
 
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-
 export const metadata = {
   title: "Affiliate Disclosure",
   description:
@@ -12,7 +9,6 @@ export const metadata = {
 export default function DisclosurePage() {
   return (
     <>
-      <Header />
       <main
         style={{
           maxWidth: 760,
@@ -61,7 +57,6 @@ export default function DisclosurePage() {
           Associates Program described above.
         </p>
       </main>
-      <Footer />
     </>
   );
 }

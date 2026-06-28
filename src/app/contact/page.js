@@ -46,7 +46,7 @@ const ContactPage = () => {
             sx={{ 
                 py: { xs: 5, md: 8 },
                 // 💡 Use the light site background for the outer container
-                bgcolor: '#FDF7F4' 
+                bgcolor: '#FAFAF8' 
             }}
         >
             
@@ -54,7 +54,7 @@ const ContactPage = () => {
                 sx={{ 
                     fontWeight: 'bold', 
                     // 💡 Set the title color to your Accent/Primary color
-                    color: '#f9c74f', 
+                    color: '#FF9900', 
                     mb: { xs: 4, md: 6 } 
                 }}
             >
@@ -70,7 +70,7 @@ const ContactPage = () => {
                             p: 3, 
                             borderRadius: 2, 
                             // 💡 Use a contrasting color for the info box background
-                            bgcolor: '#ffffff', // White background for contrast against #FDF7F4
+                            bgcolor: '#ffffff', // White background for contrast against #FAFAF8
                             boxShadow: 3 
                         }}
                     >
@@ -80,21 +80,21 @@ const ContactPage = () => {
                         
                         {/* Icons use the Primary color */}
                         <Box display="flex" alignItems="center" mb={2}>
-                            <EmailIcon sx={{ mr: 2, color: '#f9c74f' }} />
+                            <EmailIcon sx={{ mr: 2, color: '#FF9900' }} />
                             <Typography variant="body1">
                                 support@zentlify.com
                             </Typography>
                         </Box>
 
                         <Box display="flex" alignItems="center" mb={2}>
-                            <PhoneIcon sx={{ mr: 2, color: '#f9c74f' }} />
+                            <PhoneIcon sx={{ mr: 2, color: '#FF9900' }} />
                             <Typography variant="body1">
                                 +91 98765 43210
                             </Typography>
                         </Box>
                         
                         <Box display="flex" alignItems="flex-start" mb={2}>
-                            <LocationOnIcon sx={{ mr: 2, mt: 0.5, color: '#f9c74f' }} />
+                            <LocationOnIcon sx={{ mr: 2, mt: 0.5, color: '#FF9900' }} />
                             <Typography variant="body1">
                                 123 E-Commerce Lane, Digital City, India
                             </Typography>
@@ -140,7 +140,7 @@ const ContactPage = () => {
                             type="submit"
                             variant="contained"
                             // 💡 Set button color to your Accent/Primary color
-                            sx={{ py: 1.5, bgcolor: '#f9c74f', color: '#1e1e1e', '&:hover': { bgcolor: '#f9c74f', opacity: 0.9 } }}
+                            sx={{ py: 1.5, bgcolor: '#FF9900', color: '#1e1e1e', '&:hover': { bgcolor: '#FF9900', opacity: 0.9 } }}
                             endIcon={<SendIcon />}
                         >
                             Send Message

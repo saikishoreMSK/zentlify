@@ -3,7 +3,16 @@
 @tailwind utilities;
 body{
     margin: 0;
-    background-color: #FDF7F4;
+    background-color: #FAFAF8;
+    font-family: var(--font-poppins), system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Make slider product cards equal height regardless of title length */
+.mySwiper .swiper-wrapper {
+    align-items: stretch;
+}
+.mySwiper .swiper-slide {
+    height: auto;
 }
 .embla {
     overflow: hidden;

@@ -38,7 +38,7 @@ export default function About() {
             <Typography variant="h3" component="h1" gutterBottom align="center" 
                 sx={{ 
                     fontWeight: 'bold', 
-                    color: '#2c3e50', 
+                    color: '#1e1e1e', 
                     mb: { xs: 3, md: 5 } 
                 }}
             >
@@ -47,7 +47,7 @@ export default function About() {
 
             {/* Introduction */}
             <Typography variant="h6" component="p" gutterBottom sx={{ mb: 4, textAlign: 'justify' }}>
-                Welcome to <Box component="strong" sx={{ color: '#f9c74f' }}>Zentlify</Box> – your one-stop destination for exploring and shopping for Amazon-affiliated products! 
+                Welcome to <Box component="strong" sx={{ color: '#FF9900' }}>Zentlify</Box> – your one-stop destination for exploring and shopping for Amazon-affiliated products! 
                 At Zentlify, we aim to simplify your online shopping experience by curating an extensive collection of products from various categories, 
                 ensuring that you find everything you need in one place.
             </Typography>
@@ -78,7 +78,7 @@ export default function About() {
                         "Reliable product reviews to help you make informed decisions.",
                     ].map((item, index) => (
                         <ListItem key={index} disableGutters>
-                            <ListItemIcon sx={{ minWidth: 35, color: '#f9c74f' }}>
+                            <ListItemIcon sx={{ minWidth: 35, color: '#FF9900' }}>
                                 <CheckCircleOutlineIcon />
                             </ListItemIcon>
                             <ListItemText primary={<Typography variant="body1">{item}</Typography>} />
@@ -102,7 +102,7 @@ export default function About() {
                         "Gained the trust of hundreds of satisfied customers.",
                     ].map((item, index) => (
                         <ListItem key={index} disableGutters>
-                            <ListItemIcon sx={{ minWidth: 35, color: '#2c3e50' }}>
+                            <ListItemIcon sx={{ minWidth: 35, color: '#1e1e1e' }}>
                                 <EmojiEventsIcon />
                             </ListItemIcon>
                             <ListItemText primary={<Typography variant="body1">{item}</Typography>} />

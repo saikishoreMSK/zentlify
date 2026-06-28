@@ -1,19 +1,15 @@
-// ImageSlider.jsx
-
 "use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "./ImageSlider.css";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { db } from "../app/api/firebase"; // Adjust the path to match your structure
-import Link from "next/link";
-import { trackClick } from "@/lib/trackClick";
+import { db } from "../app/api/firebase";
+import ProductCard from "@/components/ProductCard";
+import SectionHeading from "@/components/SectionHeading";
 
 const ImageSlider = ({ products: productsProp }) => {
-  const router = useRouter();
   const usingProps = Array.isArray(productsProp);
   const [fetched, setFetched] = useState([]);
   const trendingProducts = usingProps ? productsProp : fetched;
@@ -29,7 +25,9 @@ const ImageSlider = ({ products: productsProp }) => {
           where("categories", "array-contains", "Trending")
         );
         const querySnapshot = await getDocs(q);
-        setFetched(querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+        setFetched(
+          querySnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+        );
       } catch (error) {
         console.error("Error fetching trending products:", error);
       }
@@ -37,68 +35,30 @@ const ImageSlider = ({ products: productsProp }) => {
     fetchTrendingProducts();
   }, [usingProps]);
 
+  if (!trendingProducts || trendingProducts.length === 0) return null;
+
   return (
-    <div>
-      <h1>Trending Products</h1>
+    <section>
+      <SectionHeading>Trending Products</SectionHeading>
       <Swiper
-        slidesPerView={2.5}
-        spaceBetween={10}
+        slidesPerView={2.2}
+        spaceBetween={16}
         grabCursor={true}
         freeMode={true}
+        breakpoints={{
+          640: { slidesPerView: 3.2 },
+          1024: { slidesPerView: 4.2 },
+        }}
         className="mySwiper"
+        style={{ padding: "0 16px 24px" }}
       >
-        {trendingProducts.map((product) => {
-          
-          // ✂️ START OF WORD TRUNCATION LOGIC
-          const productName = product.name || "";
-          const wordLimit = 3;
-          const words = productName.split(" ");
-          const limitedName = words.slice(0, wordLimit).join(" ");
-          const shouldShowEllipsis = words.length > wordLimit;
-          const displayTitle = limitedName + (shouldShowEllipsis ? "..." : "");
-          // ✂️ END OF WORD TRUNCATION LOGIC
-
-          return (
-            <SwiperSlide key={product.id}>
-              <Link href={`/products/${product.id}`}>
-                <div className="product-slide">
-                  <img
-                    src={product.image || "/placeholder.jpg"} // Use placeholder if no image
-                    alt={product.name || "Product Image"}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                  <div className="product-slide-des">
-                    
-                    {/* 💡 Use the truncated title here */}
-                    <h1>{displayTitle || "Product Name"}</h1>
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation(); // don't trigger the card's Link
-                        e.preventDefault();
-                        trackClick(product.id);
-                        window.open(product.link, "_blank", "noopener,noreferrer");
-                      }}
-                    >
-                      View on Amazon
-                    </button>
-                  </div>
-                </div>
-              </Link>
-            </SwiperSlide>
-          );
-        })}
-        <SwiperSlide>
-          <button
-            className="swiper-button"
-            onClick={() => router.push("/products")}
-          >
-            View All Products
-          </button>
-        </SwiperSlide>
+        {trendingProducts.map((product) => (
+          <SwiperSlide key={product.id} style={{ height: "auto" }}>
+            <ProductCard product={product} />
+          </SwiperSlide>
+        ))}
       </Swiper>
-    </div>
+    </section>
   );
 };
 

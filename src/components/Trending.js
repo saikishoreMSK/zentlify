@@ -1,6 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import "./Components.css"; // Add a CSS file for styling
+import SectionHeading from "@/components/SectionHeading";
 
 const Trending = () => {
   const data = [
@@ -12,7 +13,7 @@ const Trending = () => {
 
   return (
     <div className="Trending-Component">
-      <h1>Top Collections</h1>
+      <SectionHeading>Top Collections</SectionHeading>
       <div className="trending">
         {data.map((item) => (
           <Link href="/products" key={item.id} passHref>
