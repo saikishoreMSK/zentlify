@@ -33,6 +33,27 @@ async function getProduct(id) {
   }
 }
 
+export async function generateMetadata({ params }) {
+  const { id } = await params;
+  const product = await getProduct(id);
+
+  if (!product) {
+    return { title: "Product not found" };
+  }
+
+  const description = truncateDescription(product.description || "", 160);
+  return {
+    title: product.name,
+    description,
+    openGraph: {
+      title: product.name,
+      description,
+      images: product.image ? [{ url: product.image }] : [],
+      type: "website",
+    },
+  };
+}
+
 const truncateDescription = (text = "", maxLength = 150) => {
   if (text.length > maxLength) {
     const truncated = text.substring(0, maxLength);
@@ -54,8 +75,20 @@ export default async function ProductDetails({ params }) {
 
   const shortDescription = truncateDescription(product.description);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: product.image ? [product.image] : undefined,
+    description: product.description || undefined,
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Header />
       <div className={styles.container}>
         <div className={styles.imageContainer}>
@@ -82,7 +115,11 @@ export default async function ProductDetails({ params }) {
           <p className={styles.productDescription}>{shortDescription}</p>
 
           {product.link && (
-            <a href={product.link} target="_blank" rel="noopener noreferrer">
+            <a
+              href={product.link}
+              target="_blank"
+              rel="sponsored nofollow noopener noreferrer"
+            >
               <button className={styles.buyButton}>Buy on Amazon</button>
             </a>
           )}

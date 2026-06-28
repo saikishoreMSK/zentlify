@@ -41,6 +41,19 @@ const ProductsPage = () => {
     fetchProducts();
   }, []);
 
+  // Apply a category coming from the URL (e.g. /products?category=home from the
+  // homepage category links). Stored categories are capitalized, so normalize.
+  useEffect(() => {
+    if (products.length === 0) return;
+    const cat = new URLSearchParams(window.location.search).get("category");
+    if (!cat) return;
+    const normalized = cat.charAt(0).toUpperCase() + cat.slice(1).toLowerCase();
+    setSelectedCategory(normalized);
+    setFilteredProducts(
+      products.filter((product) => product.categories?.includes(normalized))
+    );
+  }, [products]);
+
   // ... (inside ProductsPage component)
 
 // Handle search functionality

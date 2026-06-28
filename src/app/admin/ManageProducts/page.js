@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import { db } from "../../api/firebase";
-import { collection, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { Box, Pagination } from "@mui/material";
 import "./ManageProducts.css";
 
@@ -35,13 +35,19 @@ const ManageProducts1 = () => {
   }, []);
 
   const handleDelete = async (id) => {
+    if (!confirm("Delete this product? This also removes its image.")) return;
     try {
-      await deleteDoc(doc(db, "products", id));
+      const res = await fetch(`/api/products/${id}`, { method: "DELETE" });
+      if (!res.ok) {
+        const result = await res.json().catch(() => ({}));
+        throw new Error(result.error || "Failed to delete product");
+      }
       setProducts(products.filter((product) => product.id !== id));
       setFilteredProducts(filteredProducts.filter((product) => product.id !== id));
       alert("Product deleted successfully!");
     } catch (error) {
       console.error("Error deleting product:", error);
+      alert(error.message || "Error deleting product");
     }
   };
 
@@ -81,8 +87,15 @@ const ManageProducts1 = () => {
 
   const handleEditSubmit = async () => {
     try {
-      const docRef = doc(db, "products", editingProduct.id);
-      await updateDoc(docRef, editForm);
+      const res = await fetch(`/api/products/${editingProduct.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editForm),
+      });
+      if (!res.ok) {
+        const result = await res.json().catch(() => ({}));
+        throw new Error(result.error || "Failed to update product");
+      }
       const updatedProducts = products.map((product) =>
         product.id === editingProduct.id ? { ...product, ...editForm } : product
       );
@@ -92,6 +105,7 @@ const ManageProducts1 = () => {
       setEditingProduct(null);
     } catch (error) {
       console.error("Error updating product:", error);
+      alert(error.message || "Error updating product");
     }
   };
 

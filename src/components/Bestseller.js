@@ -1,7 +1,8 @@
 "use client"
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useState, useEffect } from "react";
-import { db } from "../app/api/firebase"; 
+import { useRouter } from "next/navigation";
+import { db } from "../app/api/firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -9,6 +10,7 @@ import "./ImageSlider.css";
 import Link from "next/link";
 
 const Bestseller = () => {
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
 
