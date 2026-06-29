@@ -2,7 +2,7 @@
 import { useState } from "react";
 import "./products.css";
 import Radio from "./components/Radio";
-import { Grid, Box, Pagination, Typography } from "@mui/material";
+import { Box, Pagination, Typography } from "@mui/material";
 import ProductCard from "@/components/ProductCard";
 import SectionHeading from "@/components/SectionHeading";
 
@@ -66,13 +66,22 @@ export default function ProductsBrowser({
             No products found.
           </Typography>
         ) : (
-          <Grid container spacing={3}>
+          <Box
+            sx={{
+              display: "grid",
+              // Fixed-width cards that auto-fill the row (Amazon-style), instead
+              // of a few cards stretching to fill the width.
+              gridTemplateColumns: {
+                xs: "repeat(2, 1fr)",
+                sm: "repeat(auto-fill, minmax(170px, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
             {currentProducts.map((product) => (
-              <Grid item xs={6} sm={4} md={3} key={product.id}>
-                <ProductCard product={product} />
-              </Grid>
+              <ProductCard key={product.id} product={product} />
             ))}
-          </Grid>
+          </Box>
         )}
       </Box>
 

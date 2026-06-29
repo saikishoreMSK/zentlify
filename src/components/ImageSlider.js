@@ -46,8 +46,9 @@ const ImageSlider = ({ products: productsProp }) => {
         grabCursor={true}
         freeMode={true}
         breakpoints={{
-          640: { slidesPerView: 3.2 },
-          1024: { slidesPerView: 4.2 },
+          640: { slidesPerView: 3.5 },
+          1024: { slidesPerView: 5.5 },
+          1400: { slidesPerView: 6.5 },
         }}
         className="mySwiper"
         style={{ padding: "0 16px 24px" }}

@@ -14,7 +14,7 @@ import ProductCard from "@/components/ProductCard";
 import ProductGallery from "@/components/ProductGallery";
 import RatingStars from "@/components/RatingStars";
 import SectionHeading from "@/components/SectionHeading";
-import { Grid, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import { getRelatedProducts, getPopularProducts } from "@/lib/products";
 // import Image from "next/image"; // optional if you switch from <img> to <Image>
 
@@ -151,13 +151,20 @@ export default async function ProductDetails({ params }) {
       {related.length > 0 && (
         <Box sx={{ maxWidth: 1200, mx: "auto", px: 2, pb: 2 }}>
           <SectionHeading align="left">You may also like</SectionHeading>
-          <Grid container spacing={2}>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: {
+                xs: "repeat(2, 1fr)",
+                sm: "repeat(auto-fill, minmax(170px, 1fr))",
+              },
+              gap: 2,
+            }}
+          >
             {related.map((p) => (
-              <Grid item xs={6} sm={4} md={3} key={p.id}>
-                <ProductCard product={p} />
-              </Grid>
+              <ProductCard key={p.id} product={p} />
             ))}
-          </Grid>
+          </Box>
         </Box>
       )}
 
