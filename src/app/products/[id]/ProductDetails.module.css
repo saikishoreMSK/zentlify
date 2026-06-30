@@ -13,10 +13,11 @@
   
   /* Image Section */
   .imageContainer {
-    flex: 1;
+    flex: 0 0 42%;
+    max-width: 42%;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
   }
   
   .productImage {
@@ -75,14 +76,26 @@
   @media (max-width: 768px) {
     .container {
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
+      align-items: stretch;
+      gap: 1.25rem;
+      margin: 1rem;
+      padding: 1.25rem;
     }
-  
-    .productImage {
-      max-width: 80%;
-      margin: 0 auto;
+
+    /* Image must take full width when stacked, not collapse to 0. */
+    .imageContainer {
+      flex: none;
+      max-width: 100%;
+      width: 100%;
+    }
+
+    .detailsContainer {
+      flex: none;
+      width: 100%;
+    }
+
+    .productName {
+      font-size: 1.4rem;
     }
   }
   

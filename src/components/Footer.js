@@ -31,22 +31,22 @@ const Footer = () => {
       sx={{
         backgroundColor: '#1e1e1e', // Dark background
         color: '#f4f4f4',
-        py: { xs: 4, md: 6 }, // Responsive vertical padding
+        py: { xs: 2.5, md: 6 }, // Responsive vertical padding
         mt: 'auto', // Push footer to the bottom
       }}
     >
       {/* 2. Use MUI Container to center content */}
       <Container maxWidth="lg">
         {/* 3. Use MUI Grid for the main three-column layout (replaces .footer-content) */}
-        <Grid container spacing={{ xs: 3, md: 6 }} justifyContent="space-between">
+        <Grid container spacing={{ xs: 2, md: 6 }} justifyContent="space-between">
           
           {/* Section 1: About */}
           <Grid item xs={12} sm={6} md={4} sx={{ textAlign: { xs: 'center', md: 'left' } }}>
-            <Typography variant="h5" component="h2" gutterBottom sx={{ color: '#FF9900', fontWeight: 'bold' }}>
+            <Typography variant="h6" component="h2" gutterBottom sx={{ color: '#FF9900', fontWeight: 'bold', mb: { xs: 0.5, md: 1 } }}>
               Zentlify
             </Typography>
-            <Typography variant="body2">
-              Your one-stop shop for the best deals and premium products. Join us and elevate your shopping experience.
+            <Typography variant="body2" sx={{ fontSize: { xs: '0.8rem', md: '0.875rem' } }}>
+              Curated, trending Amazon picks — handpicked for you.
             </Typography>
           </Grid>
 
@@ -106,13 +106,13 @@ const Footer = () => {
         </Grid>
 
         {/* Footer Bottom (replaces .footer-bottom) */}
-        <Box 
-          sx={{ 
-            textAlign: 'center', 
-            mt: 4, 
-            pt: 2, 
-            borderTop: '1px solid #444', 
-            fontSize: '0.8rem' 
+        <Box
+          sx={{
+            textAlign: 'center',
+            mt: { xs: 2, md: 4 },
+            pt: { xs: 1.5, md: 2 },
+            borderTop: '1px solid #444',
+            fontSize: '0.8rem'
           }}
         >
           <Typography variant="caption" sx={{ color: '#aaa', display: 'block', mb: 1 }}>

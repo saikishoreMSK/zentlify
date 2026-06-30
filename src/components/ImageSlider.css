@@ -1,150 +1,20 @@
-/* Container for the Swiper */
+/* Swiper container used by the Trending / Best Seller rows.
+   Cards inside are rendered by <ProductCard/>, so we only handle layout here
+   and must NOT style the inner <img> (that would override ProductCard). */
 .mySwiper {
-  width: 100%; 
-  height: auto; 
-  overflow: hidden; 
-  padding: 10px 0; 
-}
-
-/* Styling for each image in the slider */
-.mySwiper img {
-  width: 100%; 
-  height: auto; 
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
-  object-fit: cover; 
-}
-
-/* Optional styling for space between slides */
-.swiper-slide {
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
-}
-
-/* Optional grab cursor */
-.swiper {
-  cursor: grab;
-}
-
-/* From Uiverse.io by vikiWayne */ 
-.swiper-button {
-  background-color: white;
-  width: 4rem;
-  height: 2rem;
-  color: black; 
-  border: 1px solid black; 
-  padding: 10px 20px;
-  margin-top: 20%;
-  font-size: .5rem;
-  font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.swiper-button:hover {
-  background-color: black; /* Button hover color */
-  color: white;
-}
-
-/* Mobile-specific styling */
-@media (max-width: 767px) {
-  .swiper-button {
-    font-size: 0.6rem; 
-    padding: 8px 16px; 
-  }
-}
-
-
-/* Styling for the product slide container */
-.product-slide {
-  height: 30rem;
   width: 100%;
+  overflow: hidden;
+  padding: 8px 4px 16px;
+}
+
+/* Let each slide stretch so all ProductCards are equal height. */
+.mySwiper .swiper-wrapper {
+  align-items: stretch;
+}
+.mySwiper .swiper-slide {
+  height: auto;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f9f9f9; /* Light background */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
-
-/* Hover effect for product slide */
-.product-slide:hover {
-  transform: translateY(-5px); 
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); 
-}
-
-/* Styling for the image inside the product slide */
-.product-slide img {
+.mySwiper .swiper-slide > * {
   width: 100%;
-  height: 22rem;
-  margin-bottom: 10px;
-}
-
-/* Styling for the product description container */
-.product-slide-des {
-  text-align: center;
-}
-
-/* Styling for the product title */
-.product-slide-des h1 {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: #333;
-}
-
-/* Styling for the product price */
-.product-slide-des h4 {
-  font-size: 1rem;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-/* Styling for the button */
-.product-slide-des button {
-  background-color: white;
-  color: black;
-  font-size: 0.9rem;
-  font-weight: bold;
-  padding: 8px 12px;
-  border: solid 1px black;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-/* Hover effect for the button */
-.product-slide-des button:hover {
-  background-color: #0056b3;
-  color: #fff;
-}
-
-/* Mobile-specific styling */
-@media (max-width: 767px) {
-  .product-slide {
-    height: 14rem;
-    width: 10rem;
-    padding: 10px;
-  }
-  .product-slide img{
-    height: 6rem;
-    width: 100%;
-  }
-
-  .product-slide-des h1 {
-    font-size: 1rem;
-  }
-
-  .product-slide-des h4 {
-    font-size: 0.9rem;
-  }
-
-  .product-slide-des button {
-    font-size: 0.8rem;
-    padding: 6px 10px;
-  }
 }

@@ -7,15 +7,22 @@ import { notFound } from "next/navigation";
 import styles from "./ProductDetails.module.css";
 
 import Bestseller from "@/components/Bestseller";
+import ImageSlider from "@/components/ImageSlider";
+import Trending from "@/components/Trending";
 import AffiliateDisclosure from "@/components/AffiliateDisclosure";
 import AffiliateButton from "@/components/AffiliateButton";
 import ProductBadge from "@/components/ProductBadge";
 import ProductCard from "@/components/ProductCard";
 import ProductGallery from "@/components/ProductGallery";
+import ProductDescription from "@/components/ProductDescription";
 import RatingStars from "@/components/RatingStars";
 import SectionHeading from "@/components/SectionHeading";
 import { Box } from "@mui/material";
-import { getRelatedProducts, getPopularProducts } from "@/lib/products";
+import {
+  getRelatedProducts,
+  getPopularProducts,
+  getProductsByCategory,
+} from "@/lib/products";
 // import Image from "next/image"; // optional if you switch from <img> to <Image>
 
 async function getProduct(id) {
@@ -80,9 +87,10 @@ export default async function ProductDetails({ params }) {
   }
 
   // Related rows below the fold, fetched once on the server (no client refetch).
-  const [related, popular] = await Promise.all([
+  const [related, popular, trending] = await Promise.all([
     getRelatedProducts({ ...product, id }, 8),
     getPopularProducts(10),
+    getProductsByCategory("Trending"),
   ]);
 
   const jsonLd = {
@@ -128,9 +136,7 @@ export default async function ProductDetails({ params }) {
               </span>
             </div>
           ) : null}
-          {product.description && (
-            <p className={styles.productDescription}>{product.description}</p>
-          )}
+          <ProductDescription text={product.description} />
 
           {product.link && (
             <AffiliateButton
@@ -169,6 +175,8 @@ export default async function ProductDetails({ params }) {
       )}
 
       <Bestseller products={popular} />
+      <ImageSlider products={trending} />
+      <Trending />
     </>
   );
 }

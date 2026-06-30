@@ -2,7 +2,8 @@
 
 /* General Carousel Structure */
 .embla {
-    height: 16rem; /* Mobile height */
+    height: 240px; /* Mobile hero height */
+    width: 100%;
 }
 
 .embla__slide {
@@ -30,8 +31,8 @@
 }
 
 .embla-image-container img {
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 100% !important;
     object-fit: cover; /* Ensures the image covers the area nicely */
     transition: transform 0.5s ease-in-out;
 }
